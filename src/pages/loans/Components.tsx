@@ -21,21 +21,6 @@ export const Input = styled.input`
     color: #5D478B;
 `;
 
-export const Button = styled.button`
-    border: none;
-    background: none;
-    margin: 0 1rem 0rem;
-    color:  #4876FF;
-    &:hover {
-        color: #836FFF;
-    }
-`;
-
-export const TableCard = styled.div`
-    height: 80%;
-    overflow-y: auto;
-`;
-
 export const Option = styled.option`
     background-color: #ffff;
     font-size: 1rem;
@@ -54,4 +39,19 @@ export const Select = styled.select`
     border-radius: 0.2rem;
     border: 0.06rem solid;
     color: #5D478B;
+`;
+
+export const Button = styled.button`
+    border: none;
+    background: none;
+    margin: 0 1rem 0rem;
+    color:  #4876FF;
+    &:hover {
+        color: #836FFF;
+    }
+`;
+
+export const TableCard = styled.div`
+    height: 80%;
+    overflow-y: auto;
 `;

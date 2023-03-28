@@ -13,8 +13,8 @@ function Sidebar() {
       <App>
         <Ul>
           <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
-          <Li><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
-          <Li><TextBar><ImportExportIcon/>Empréstimo/Devolução</TextBar></Li>
+          <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
+          <Li onClick={() => navigate('/loans')}><TextBar><ImportExportIcon/>Empréstimos/Devoluções</TextBar></Li>
           <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
         </Ul>
       </App>

@@ -35,23 +35,3 @@ export const TableCard = styled.div`
     height: 80%;
     overflow-y: auto;
 `;
-
-export const Option = styled.option`
-    background-color: #ffff;
-    font-size: 1rem;
-    margin-right: 1rem;
-    padding: 1rem 1rem 1rem 1rem;
-    border-radius: 0.2rem;
-    border: 0.06rem solid;
-    color: #5D478B;
-`;
-
-export const Select = styled.select`
-    background-color: #ffff;
-    font-size: 1rem;
-    margin-right: 1rem;
-    padding: 1rem 1rem 1rem 1rem;
-    border-radius: 0.2rem;
-    border: 0.06rem solid;
-    color: #5D478B;
-`;

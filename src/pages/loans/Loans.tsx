@@ -13,19 +13,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function Students() {
-  const [name, setName] = useState('');
+function Loans() {
+  const [loans, setLoans]: any = useState([{}]);
+  const [student, setStudent] = useState('');
   const [students, setStudents]: any = useState([{}]);
-  const [year, setYear] = useState('');
-  const [team, setTeam] = useState('');
-  const [period, setPeriod] = useState('Matutino');
+  const [book, setBook] = useState('');
+  const [books, setBooks]: any = useState([{}]);
+
+  const [loan, setLoan] = useState(new Date().toISOString().substr(0, 10));
+  const [devolution, setDevolution] = useState('');
+
   const token = localStorage.getItem('token');
-  const periods = [
-    {period : "Matutino"},
-    {period: "Vespertino"},
-    {period: "Noturno"}
-  ]
-  const data = { name, year, team,  period};
+  const data = { student, book, loan};
   useEffect(() => {
     api.get('http://localhost:5000/students',{
         headers: {
@@ -37,19 +36,40 @@ function Students() {
     })
     .catch(error => console.error(error));
   }, [])
+
+  useEffect(() => {
+    api.get('http://localhost:5000/books',{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then((response) => {
+      setBooks(response.data)
+    })
+    .catch(error => console.error(error));
+  }, [])
+  useEffect(() => {
+    api.get('http://localhost:5000/loans',{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then((response) => {
+      setLoans(response.data)
+    })
+    .catch(error => console.error(error));
+  }, [])
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const token = localStorage.getItem('token');
-    console.log(data)
-    api.post('http://localhost:5000/students', data, {
+    api.post('http://localhost:5000/loans', data, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
     })
     .then((response) => {
-      setStudents([...students, response.data])
-      console.log(students)
+      setLoans(response.data)
     })
     .catch(error => console.error(error));
   };
@@ -58,42 +78,44 @@ function Students() {
       <Sidebar/>
         <Content>
           <Form onSubmit={handleSubmit}>
-            <Input placeholder='Nome'
-              value={name}
-              id="name"
-              onChange={(event) => setName(event.target.value)}
-            />
-            <Input placeholder='Ano'
-              value={year}
-              id="name"
-              onChange={(event) => setYear(event.target.value)}
-            />
-            <Input placeholder='Turma'
-              value={team}
-              id="class"
-              onChange={(event) => setTeam(event.target.value)}
-            />
             <Select 
-              onChange={(event) => {setPeriod(event.target.value)}}
-              value={period}
+              onChange={(event) => setStudent(event.target.value)}
+              value={student}
             >
-              {periods.map((option) => (
-                <Option key="period" value={option.period}>
-                {option.period}
+              {students.map((option) => (
+                <Option key= {option.name} value={option.id}>
+                {option.name} - {option.year} {option.team} {option.period}
                 </Option>
               ))}
             </Select>
+            <Select 
+              value={book}
+              onChange={(event) => setBook(event.target.value)}
+
+            >
+              {books.map((option) => (
+                <Option key= {option.title} value={option.id}>
+                {option.author} - {option.title} - {option.serial}
+                </Option>
+              ))}
+            </Select>
+            <Input placeholder='Data de empréstimo'
+              value={loan}
+              type="date"
+              id="class"
+              onChange={(event) => setLoan(event.target.value)}
+            />
             <Button type="submit"><AddCircleOutlineIcon/></Button>
           </Form>
-        <TableCard>
+          <TableCard>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell align="left">Nome</TableCell>
-                  <TableCell align="left">Ano</TableCell>
-                  <TableCell align="left">Turma</TableCell>
-                  <TableCell align="left">Período</TableCell>
+                  <TableCell align="left">Livro</TableCell>
+                  <TableCell align="left">Data de Empréstimo</TableCell>
+                  <TableCell align="left">Devolução</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -116,10 +138,10 @@ function Students() {
               </TableBody>
             </Table>
           </TableContainer>
-        </TableCard>
+        </TableCard>        
       </Content>
     </Screen>
   );
 }
 
-export default Students;
+export default Loans;
