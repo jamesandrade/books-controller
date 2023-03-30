@@ -1,22 +1,45 @@
-import React from 'react';
+import React ,{ useState } from 'react';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import InsightsIcon from '@mui/icons-material/Insights';
+import MenuIcon from '@mui/icons-material/Menu';
+
+import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
+import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
+
+
 import { useNavigate } from 'react-router-dom';
 
 
-import { App, Ul, Li, TextBar } from './Components';
+import { App, Ul, Li, TextBar, Menu, UlMobile } from './Components';
 function Sidebar() {
   const navigate = useNavigate();
+  const [showMenu, setShowMenu] = useState(false);
+  
+  function handleClick() {
+    showMenu ? setShowMenu(false) : setShowMenu(true);
+  }
   return (
       <App>
-        <Ul>
-          <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
-          <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
-          <Li onClick={() => navigate('/loans')}><TextBar><ImportExportIcon/>Empréstimos/Devoluções</TextBar></Li>
-          <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
-        </Ul>
+        <Menu onClick={handleClick}>
+          <MenuIcon/>
+        </Menu>
+          <Ul>
+            <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
+            <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
+            <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
+            <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
+            <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>            
+          </Ul> 
+          { showMenu && 
+            <UlMobile>
+              <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
+              <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
+              <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
+              <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
+              <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>            
+          </UlMobile> }
       </App>
   );
 }

@@ -13,6 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
+
 function Loans() {
   const [loans, setLoans]: any = useState([{}]);
   const [student, setStudent] = useState('');
@@ -69,7 +71,8 @@ function Loans() {
         },
     })
     .then((response) => {
-      setLoans(response.data)
+      setLoans([...loans, response.data])
+      setBooks([])
     })
     .catch(error => console.error(error));
   };
@@ -82,6 +85,9 @@ function Loans() {
               onChange={(event) => setStudent(event.target.value)}
               value={student}
             >
+              <Option value="" disabled selected>
+                Selecione um aluno
+              </Option>
               {students.map((option) => (
                 <Option key= {option.name} value={option.id}>
                 {option.name} - {option.year} {option.team} {option.period}
@@ -91,18 +97,22 @@ function Loans() {
             <Select 
               value={book}
               onChange={(event) => setBook(event.target.value)}
-
             >
+              <Option value="" disabled selected>
+                Selecione um livro
+              </Option>
               {books.map((option) => (
-                <Option key= {option.title} value={option.id}>
-                {option.author} - {option.title} - {option.serial}
-                </Option>
+                !option.is_loaned &&
+                  <Option key= {option.title} value={option.id}>
+                    {option.author} - {option.title} - {option.serial}
+                  </Option>
               ))}
             </Select>
             <Input placeholder='Data de empréstimo'
               value={loan}
               type="date"
-              id="class"
+              id="date-loan"
+              name="date-loan"
               onChange={(event) => setLoan(event.target.value)}
             />
             <Button type="submit"><AddCircleOutlineIcon/></Button>
@@ -115,24 +125,24 @@ function Loans() {
                   <TableCell align="left">Nome</TableCell>
                   <TableCell align="left">Livro</TableCell>
                   <TableCell align="left">Data de Empréstimo</TableCell>
-                  <TableCell align="left">Devolução</TableCell>
+                  <TableCell align="left"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {students.map((row) => (
-                  row.name &&
+                {loans.map((row) => (
+                  !row.returned &&
                     <TableRow
-                      key={row?.name}
+                      key={row?.id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell component="th" scope="row" align="left">
-                      {row?.name}
+                      {row?.student?.name} - {row?.student?.year} {row?.student?.team}
                     </TableCell>                     
                     <TableCell component="th" scope="row" align="left">
-                      {row?.year}
+                      {row?.book?.title} - {row?.book?.serial}
                     </TableCell>
-                    <TableCell align="left">{row?.team}</TableCell>
-                    <TableCell align="left">{row?.period}</TableCell>
+                    <TableCell align="left">{new Date(row?.loan).toLocaleDateString('pt-br')}</TableCell>
+                    <TableCell align="left">Editar</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
