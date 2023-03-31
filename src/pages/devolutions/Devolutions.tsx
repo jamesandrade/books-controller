@@ -15,12 +15,13 @@ import Paper from '@mui/material/Paper';
 
 
 
-function Loans() {
+function Devolutions() {
   const [loans, setLoans]: any = useState([{}]);
   const [student, setStudent] = useState('');
   const [students, setStudents]: any = useState([{}]);
   const [book, setBook] = useState('');
   const [books, setBooks]: any = useState([{}]);
+  const [selectDisabled, setSelectDisabled] = useState(true);
 
   const [loan, setLoan] = useState(new Date().toISOString().substr(0, 10));
   const [devolution, setDevolution] = useState('');
@@ -61,6 +62,13 @@ function Loans() {
     })
     .catch(error => console.error(error));
   }, [])
+  const handleSelect = (event: any) =>{
+    setStudent(event.target.value);
+    console.log(student);
+    if (student !== ''){
+      setSelectDisabled(false);
+    }
+  }
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const token = localStorage.getItem('token');
@@ -82,40 +90,51 @@ function Loans() {
         <Content>
           <Form onSubmit={handleSubmit}>
             <Select 
-              onChange={(event) => setStudent(event.target.value)}
+              onChange={handleSelect}
               value={student}
             >
               <Option value="" disabled selected>
                 Selecione um aluno
               </Option>
-              {students.map((option) => (
-                <Option key= {option.name} value={option.id}>
-                {option.name} - {option.year} {option.team} {option.period}
-                </Option>
+              {loans
+              .filter((obj, index, self) =>
+              index === self.findIndex((o) => o.student?.id === obj.student?.id))
+              .map((option) => (
+                !option.returned &&
+                  <Option key= {option?.id} value={option?.id}>
+                    {option?.student?.name} - {option?.student?.year} {option?.student?.team} {option?.student?.period}
+                  </Option>
               ))}
             </Select>
             <Select 
               value={book}
+              disabled={selectDisabled}
               onChange={(event) => setBook(event.target.value)}
             >
               <Option value="" disabled selected>
                 Selecione um livro
               </Option>
-              {books.map((option) => (
-                !option.is_loaned &&
-                  <Option key= {option.title} value={option.id}>
-                    {option.author} - {option.title} - {option.serial}
+              {loans
+              .map((option) => (
+                !option.returned && option?.student?.id === student && 
+                  <Option key= {option?.book?.title} value={option?.book?.id}>
+                    {option?.book?.author} - {option?.book?.title} - {option?.book?.serial}
                   </Option>
               ))}
             </Select>
             <Input placeholder='Data de empréstimo'
               value={loan}
+              disabled={selectDisabled}
               type="date"
               id="date-loan"
               name="date-loan"
               onChange={(event) => setLoan(event.target.value)}
             />
-            <Button type="submit"><AddCircleOutlineIcon/></Button>
+            <Button
+              disabled={selectDisabled}
+              type="submit">
+                <AddCircleOutlineIcon/>
+            </Button>
           </Form>
           <TableCard>
           <TableContainer component={Paper}>
@@ -152,4 +171,4 @@ function Loans() {
   );
 }
 
-export default Loans;
+export default Devolutions;

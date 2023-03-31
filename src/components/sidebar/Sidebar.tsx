@@ -1,10 +1,9 @@
 import React ,{ useState } from 'react';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import ImportExportIcon from '@mui/icons-material/ImportExport';
 import InsightsIcon from '@mui/icons-material/Insights';
 import MenuIcon from '@mui/icons-material/Menu';
-
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
 import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
 
@@ -20,6 +19,11 @@ function Sidebar() {
   function handleClick() {
     showMenu ? setShowMenu(false) : setShowMenu(true);
   }
+  const handleExit = (event: any) => {
+    event.preventDefault();
+    localStorage.removeItem('token')
+    navigate('/');
+  };
   return (
       <App>
         <Menu onClick={handleClick}>
@@ -29,16 +33,19 @@ function Sidebar() {
             <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
             <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
             <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
-            <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
-            <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>            
+            <Li onClick={() => navigate('/devolutions')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
+            <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>     
+            <Li onClick={handleExit}><TextBar><ExitToAppOutlinedIcon/>Sair</TextBar></Li>     
+
           </Ul> 
           { showMenu && 
             <UlMobile>
               <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
               <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
               <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
-              <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
-              <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>            
+              <Li onClick={() => navigate('/devolutions')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
+              <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
+              <Li onClick={handleExit}><TextBar><ExitToAppOutlinedIcon/>Sair</TextBar></Li>
           </UlMobile> }
       </App>
   );
