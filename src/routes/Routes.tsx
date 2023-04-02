@@ -7,7 +7,6 @@ import Students from "../pages/students/Students";
 import Books from "../pages/books/Books";
 import Loans from "../pages/loans/Loans";
 import Devolutions from "../pages/devolutions/Devolutions";
-
 const routes = () => {
    return(
        <BrowserRouter>

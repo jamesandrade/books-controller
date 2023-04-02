@@ -62,8 +62,8 @@ function Devolutions() {
     })
     .catch(error => console.error(error));
   }, [])
-  const handleSelect = (event: any) =>{
-    setStudent(event.target.value);
+  const handleSelect = async (event: any) =>{
+    await setStudent((prevState: any)=> {return event.target.value});
     console.log(student);
     if (student !== ''){
       setSelectDisabled(false);

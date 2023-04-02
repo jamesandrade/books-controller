@@ -1,49 +1,97 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { TextField, Button } from "@material-ui/core";
 import { ThemeProvider } from 'styled-components';
+import { GlobalStyle, Form } from "./Components";
+import { useNavigate } from 'react-router-dom';
+import api from "../../global/services/api";
 
-import { Box, LoginText, Input, Submit, GlobalStyle } from './Components';
+import { createTheme } from '@material-ui/core';
+
+
+interface LoginForm {
+  email: string;
+  password: string;
+}
 
 function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const data = { email, password };
-    const navigate = useNavigate();
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        fetch('http://localhost:5000/users/login', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            localStorage.setItem('token', data.token);
-            navigate('/home');
-        })
-        .catch(error => console.error(error));
-    };
-    return (
-        <ThemeProvider theme={{}}>
-        <GlobalStyle />
+  const navigate = useNavigate();
+  const { control, handleSubmit } = useForm<LoginForm>();
+  const [loginError, setLoginError] = useState("");
 
-        <Box onSubmit={handleSubmit}>
-            <LoginText>LOGIN</LoginText>
-            <Input value={email}
-                id="email"
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Usuário"/>
-            <Input type="password"
-                id="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Senha"/>
-            <Submit type="submit">Entrar</Submit>
-        </Box>
-        </ThemeProvider>
-    );
+  const onSubmit = (data: LoginForm) => {
+    api
+      .post("/users/login", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        navigate("/home");
+      })
+      .catch((error) => {
+        setLoginError("Erro ao fazer login. Verifique suas credenciais.");
+        console.error(error);
+      });
+  };
+
+  return (
+    <ThemeProvider theme={{}}>
+      
+      <GlobalStyle />
+      
+
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              label="Email"
+              variant="outlined"
+              margin="normal"
+              sx={{ mb: 2 }}
+              autoFocus
+              error={!!loginError}
+              helperText={loginError || ""}
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          defaultValue=""
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              label="Password"
+              variant="outlined"
+              margin="normal"
+              sx={{ mb: 2 }}
+              fullWidth
+              type="password"
+              error={!!loginError}
+              helperText={loginError || ""}
+              {...field}
+            />
+          )}
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          size="large"
+        >
+          Login
+        </Button>
+      </Form>
+    </ThemeProvider>
+  );
 }
 
 export default Login;

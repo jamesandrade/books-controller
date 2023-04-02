@@ -8,7 +8,7 @@ function Home() {
     <Screen>
       <Sidebar/>
       <Content>
-        <p>Ainda não pensei em algo para a Home</p>
+      
       </Content>
     </Screen>
   );
