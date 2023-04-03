@@ -1,13 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button } from "@material-ui/core";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle, Form } from "./Components";
 import { useNavigate } from 'react-router-dom';
 import api from "../../global/services/api";
-
-import { createTheme } from '@material-ui/core';
-
+import jwt_decode from "jwt-decode";
+import { VerifyToken } from "../../global/hooks/VerifyToken";
 
 interface LoginForm {
   email: string;
@@ -15,7 +14,17 @@ interface LoginForm {
 }
 
 function Login() {
+  VerifyToken();
   const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken: any = jwt_decode(token);
+      if (decodedToken.exp >= Date.now() / 1000) {
+        navigate("/home");
+      }
+    }
+  }, [])
   const { control, handleSubmit } = useForm<LoginForm>();
   const [loginError, setLoginError] = useState("");
 
@@ -38,10 +47,7 @@ function Login() {
 
   return (
     <ThemeProvider theme={{}}>
-      
       <GlobalStyle />
-      
-
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="email"
@@ -56,7 +62,6 @@ function Login() {
               sx={{ mb: 2 }}
               autoFocus
               error={!!loginError}
-              helperText={loginError || ""}
               {...field}
             />
           )}
@@ -83,7 +88,6 @@ function Login() {
         <Button
           type="submit"
           variant="contained"
-          color="primary"
           fullWidth
           size="large"
         >

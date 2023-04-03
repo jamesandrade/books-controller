@@ -1,4 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
+import TextField from '@material-ui/core/TextField';
+
 export const GlobalStyle = createGlobalStyle`
     body {
         display: flex;
@@ -9,9 +11,8 @@ export const GlobalStyle = createGlobalStyle`
 export const Form = styled.form`
     display: flex;
     flex-direction: column;
-    width: 21.8rem;
-    height: 21.8rem;
-    background-color: #fff8;
+    width: 18rem;
+    height: 18rem;
     font-family: 'Roboto', sans-serif;
     border-radius: 0.3rem;
 `;
