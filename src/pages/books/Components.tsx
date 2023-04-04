@@ -2,37 +2,22 @@ import styled from 'styled-components';
 
 export const Content = styled.div`
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    padding: 5rem 5rem 0;
+    padding: 5rem 12rem 0.25rem;
+    align-items: center;
+
     row-gap: 1rem;
 `;
 export const Form = styled.form`
     display: flex;
     flex-direction: row;
-`;
-export const Input = styled.input`
-    background-color: #ffff;
-    font-size: 1rem;
-    margin-right: 1rem;
-    padding: 1rem 1rem 1rem 1rem;
-    border-radius: 0.2rem;
-    border: 0.06rem solid;
-    color: #5D478B;
-`;
 
-export const Button = styled.button`
-    border: none;
-    background: none;
-    margin: 0 1rem 0rem;
-    color:  #4876FF;
-    &:hover {
-        color: #836FFF;
-    }
+    column-gap: 1rem;
 `;
 
 export const TableCard = styled.div`
-    height: 80%;
-    width: 100%;
     overflow-y: auto;
+    ::-webkit-scrollbar {
+        width: 0px;
+    }
 `;

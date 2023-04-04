@@ -7,7 +7,7 @@ export const App = styled.div`
     width: 12.5rem;
     font-family: 'Roboto', sans-serif;
     font-size: 0.75rem;
-    @media screen and (max-width: 850px){
+    @media screen and (max-width: 1150px){
         padding:0 0 0;
         height: 3rem;
         width: 100%;
@@ -18,7 +18,7 @@ export const Ul = styled.ul`
     list-style: none;
     margin: 0;
     padding: 0;
-    @media screen and (max-width: 850px){
+    @media screen and (max-width: 1150px){
         display: none;
     }
 `;
@@ -31,7 +31,7 @@ export const UlMobile = styled.ul`
     margin: 0;
     padding: 5rem 0.2rem 0;
     background-color: #333;
-    @media screen and (min-width: 851px){
+    @media screen and (min-width: 1151px){
         display: none;
         position: relative;
     }
@@ -59,7 +59,7 @@ export const TextBar = styled.a`
     }
 `;
 export const Menu = styled.div`
-    @media screen and (min-width: 851px){
+    @media screen and (min-width: 1151px){
         display: none;
     }
 

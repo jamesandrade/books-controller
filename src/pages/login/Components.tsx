@@ -1,5 +1,4 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import TextField from '@material-ui/core/TextField';
 
 export const GlobalStyle = createGlobalStyle`
     body {

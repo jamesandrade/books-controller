@@ -6,7 +6,6 @@ import { GlobalStyle, Form } from "./Components";
 import { useNavigate } from 'react-router-dom';
 import api from "../../global/services/api";
 import jwt_decode from "jwt-decode";
-import { VerifyToken } from "../../global/hooks/VerifyToken";
 
 interface LoginForm {
   email: string;
@@ -14,7 +13,6 @@ interface LoginForm {
 }
 
 function Login() {
-  VerifyToken();
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,7 +22,7 @@ function Login() {
         navigate("/home");
       }
     }
-  }, [])
+  }, [navigate])
   const { control, handleSubmit } = useForm<LoginForm>();
   const [loginError, setLoginError] = useState("");
 

@@ -7,23 +7,23 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
 import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
 
-
 import { useNavigate } from 'react-router-dom';
-
 
 import { App, Ul, Li, TextBar, Menu, UlMobile } from './Components';
 function Sidebar() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  
+
   function handleClick() {
     showMenu ? setShowMenu(false) : setShowMenu(true);
   }
+
   const handleExit = (event: any) => {
     event.preventDefault();
     localStorage.removeItem('token')
     navigate('/');
   };
+
   return (
       <App>
         <Menu onClick={handleClick}>

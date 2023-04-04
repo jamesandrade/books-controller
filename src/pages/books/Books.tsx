@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
-import api from '../../global/services/api'
 import { Screen } from '../../global/styles/Screen';
-import { Content, Input, Button, Form, TableCard } from './Components';
-
+import { Content, Form, TableCard } from './Components';
+import { useForm, Controller } from "react-hook-form";
+import { TextField, Button } from "@material-ui/core";
+import { ToastContainer, toast } from 'react-toastify';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,77 +13,121 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { VerifyToken } from '../../global/hooks/VerifyToken';
+import { GetAllBooks, PostBook } from '../../global/hooks/Books';
+import { IBook } from "../../components/interfaces/IBook";
+import 'react-toastify/dist/ReactToastify.css';
 
 function Books() {
+  VerifyToken();
+  const { control, handleSubmit, reset } = useForm<IBook>();
   const [books, setBooks]: any = useState([{}]);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [serial, setSerial] = useState('');
-  const token = localStorage.getItem('token');
-  const data = { title, author, serial};
   useEffect(() => {
-    api.get('http://localhost:5000/books',{
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-    })
-    .then((response) => {
-      setBooks(response.data)
-    })
-    .catch(error => console.error(error));
-  }, [])
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    const token = localStorage.getItem('token');
-    api.post('http://localhost:5000/books', data, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-    })
-    .then((response) => {
-      setBooks([...books, response.data])
-      console.log(books)
-    })
-    .catch(error => console.error(error));
+    async function fetchBooks() {
+      try {
+        const books = await GetAllBooks();
+        setBooks(books);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchBooks();
+  }, []);
+
+  const onSubmit = async (data: IBook) => {
+    const newBook = await PostBook(data);
+    setBooks([...books, newBook]);
+    reset();
+    toast.success('Registrado com Sucesso!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
   return (
     <Screen>
-      <Sidebar/>
-        <Content>
-          <Form onSubmit={handleSubmit}>
-            <Input placeholder='Título'
-              value={title}
-              id="name"
-              onChange={(event) => setTitle(event.target.value)}
-            />
-            <Input placeholder='Autor'
-              value={author}
-              id="name"
-              onChange={(event) => setAuthor(event.target.value)}
-            />
-            <Input placeholder='Número de Série'
-              value={serial}
-              id="class"
-              onChange={(event) => setSerial(event.target.value)}
-            />
-            <Button type="submit"><AddCircleOutlineIcon/></Button>
-          </Form>
+      <Sidebar />
+      <ToastContainer />
+      <Content>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="title"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="Título"
+                variant="outlined"
+                margin="normal"
+                sx={{ mb: 2 }}
+                autoFocus
+                {...field}
+              />
+            )}
+          />            
+          <Controller
+            name="author"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="Autor"
+                variant="outlined"
+                margin="normal"
+                sx={{ mb: 2 }}
+                autoFocus
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="serial"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="Número de Série"
+                variant="outlined"
+                margin="normal"
+                sx={{ mb: 2 }}
+                autoFocus
+                {...field}
+              />
+            )}
+          />
+          <Button
+            sx={{ mb: 2 }}
+            style={{ marginTop: '1rem' }}
+            type="submit"
+            size="small"
+            variant="contained"
+          >
+            <AddCircleOutlineIcon/>
+          </Button>        
+        </Form>
         <TableCard>
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table  sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">Título</TableCell>
-                  <TableCell align="left">Autor</TableCell>
-                  <TableCell align="left">Número de Série</TableCell>
+                  <TableCell  align="left">Título</TableCell>
+                  <TableCell  align="left">Autor</TableCell>
+                  <TableCell  align="left">Número de Série</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {books.map((row) => (
-                  row.title &&
+                {books?.map((row) => (
+                  row?.title &&
                     <TableRow
-                      key={row?.title}
+                      key={row?.serial}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell component="th" scope="row" align="left">

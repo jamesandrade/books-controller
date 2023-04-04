@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
-import api from '../../global/services/api'
+import api from '../../global/services/api';
 import { Screen } from '../../global/styles/Screen';
 import { Content, Input, Button, Form, TableCard, Select, Option } from './Components';
 
