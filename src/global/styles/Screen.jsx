@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 export const Screen = styled.div`
     display: flex;
-    height: 100vh;
-    overflow: hidden;
-
-    @media screen and (max-width: 1150px){
-        display: grid;
+    flex-direction: row;
+    gap: 15vh;
+    align-items: center;  
+    @media screen and (max-width: 850px){
+        flex-direction: column;
     }
 `;

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
-import { Content, Form, TableCard } from './Components';
+import { Content, Form, TableCard, CardContainer, Card } from './Components';
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button } from "@material-ui/core";
+import { useMediaQuery } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,8 +23,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Books() {
   VerifyToken();
+  const isSmallScreen = useMediaQuery('(max-width:850px)');
   const { control, handleSubmit, reset } = useForm<IBook>();
   const [books, setBooks]: any = useState([{}]);
+  const [registerBook, setRegisterBook] = useState(false);
+  const [listBooks, setlistBooks] = useState(false);
+  const [cards, setCards] = useState(true);
+
   useEffect(() => {
     async function fetchBooks() {
       try {
@@ -38,6 +46,10 @@ function Books() {
     const newBook = await PostBook(data);
     setBooks([...books, newBook]);
     reset();
+    setCards(true);
+    setRegisterBook(false);
+    setlistBooks(false);
+
     toast.success('Registrado com Sucesso!', {
       position: "top-right",
       autoClose: 5000,
@@ -52,9 +64,52 @@ function Books() {
   return (
     <Screen>
       <Sidebar />
-      <ToastContainer />
       <Content>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <ToastContainer />
+        { cards &&
+          <CardContainer>
+            <Card onClick={() => {
+              if (registerBook){
+                setRegisterBook(false);
+              } else {
+                setlistBooks(false);
+                setRegisterBook(true);
+                setCards(false);
+              }
+            }}>
+              <PostAddOutlinedIcon style={{fontSize: "1.25rem"}} />
+              Adicionar Livro
+            </Card>
+            <Card onClick={() => {
+              if (listBooks){
+                setlistBooks(false);
+              } else {
+                setRegisterBook(false);
+                setlistBooks(true);
+                setCards(false);
+              }
+            }}>
+              <ListAltSharpIcon style={{fontSize: "1.25rem"}} />
+              Listar Livros
+            </Card>
+          </CardContainer>
+        }
+        {!cards && isSmallScreen && 
+          <p 
+            style={{color: "#1976d2"}}
+            onClick={() => {
+            setRegisterBook(false);
+            setlistBooks(false);
+            setCards(true);
+          }}>
+            Voltar
+          </p> 
+        }
+        
+        <Form onSubmit={handleSubmit(onSubmit)} 
+          style={ 
+            isSmallScreen ? (registerBook ? {display: 'flex'} :
+              {display: 'none'}) : {display: 'flex'}}>
           <Controller
             name="title"
             control={control}
@@ -102,25 +157,26 @@ function Books() {
                 {...field}
               />
             )}
-          />
+          /> 
           <Button
             sx={{ mb: 2 }}
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: '1rem', width: '4rem' }}
             type="submit"
-            size="small"
+            size="large"
             variant="contained"
           >
             <AddCircleOutlineIcon/>
-          </Button>        
+          </Button>      
         </Form>
-        <TableCard>
+        
+        <TableCard style={isSmallScreen && !listBooks ? {display: 'none'} : {display: 'flex'} }>
           <TableContainer component={Paper}>
-            <Table  sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell  align="left">Título</TableCell>
-                  <TableCell  align="left">Autor</TableCell>
-                  <TableCell  align="left">Número de Série</TableCell>
+                  <TableCell align="left">Autor</TableCell>
+                  <TableCell align="left">Número de Série</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -128,7 +184,6 @@ function Books() {
                   row?.title &&
                     <TableRow
                       key={row?.serial}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell component="th" scope="row" align="left">
                       {row?.title}
@@ -136,7 +191,9 @@ function Books() {
                     <TableCell component="th" scope="row" align="left">
                       {row?.author}
                     </TableCell>
-                    <TableCell align="left">{row?.serial}</TableCell>
+                    <TableCell component="th" scope="row" align="left">
+                      {row?.serial}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

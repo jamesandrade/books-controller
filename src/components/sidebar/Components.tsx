@@ -5,12 +5,14 @@ export const App = styled.div`
     color: #fff;
     padding: 5rem 0.2rem 0;
     width: 12.5rem;
+    z-index: 1;
     font-family: 'Roboto', sans-serif;
     font-size: 0.75rem;
-    @media screen and (max-width: 1150px){
-        padding:0 0 0;
-        height: 3rem;
+    @media screen and (max-width: 850px){
+        padding: 0 0 0;
+        position: fixed;
         width: 100%;
+        height: 3rem;
       }
 `;
   
@@ -18,7 +20,8 @@ export const Ul = styled.ul`
     list-style: none;
     margin: 0;
     padding: 0;
-    @media screen and (max-width: 1150px){
+    height: 100vh;
+    @media screen and (max-width: 850px){
         display: none;
     }
 `;
@@ -26,14 +29,13 @@ export const Ul = styled.ul`
 export const UlMobile = styled.ul`
     position: absolute;
     list-style: none;
-    height: 100%;
-    width: 12.5rem;
     margin: 0;
-    padding: 5rem 0.2rem 0;
+    padding-top: 5rem;
+    height: 100vh;
+    width: 12.5rem;
     background-color: #333;
-    @media screen and (min-width: 1151px){
+    @media screen and (min-width: 851px){
         display: none;
-        position: relative;
     }
 `;
 export const Li = styled.li`
@@ -59,10 +61,9 @@ export const TextBar = styled.a`
     }
 `;
 export const Menu = styled.div`
-    @media screen and (min-width: 1151px){
+    @media screen and (min-width: 851px){
         display: none;
     }
-
     margin-left: 0.25rem;
     margin-top: 0.75rem;
 `;
