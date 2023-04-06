@@ -109,7 +109,8 @@ function Books() {
         <Form onSubmit={handleSubmit(onSubmit)}
           style={
             isSmallScreen ? (registerBook ? {display: 'flex'} :
-              {display: 'none'}) : {display: 'flex'}}>
+              {display: 'none'}) : {display: 'flex'}}
+        >
           <Controller
             name="title"
             control={control}
@@ -168,7 +169,9 @@ function Books() {
             <AddCircleOutlineIcon/>
           </Button>
         </Form>
-        <TableCard style={isSmallScreen && !listBooks ? {display: 'none'} : {display: 'flex'} }>
+        <TableCard
+          style={isSmallScreen && !listBooks ? {display: 'none'} : {display: 'flex'}}
+        >
           <TableContainer component={Paper}>
             <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
               <TableHead>

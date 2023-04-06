@@ -61,3 +61,26 @@ export const Select = styled.select`
     border: 0.06rem solid;
     color: #5D478B;
 `;
+export const Card = styled.div`
+    display: flex;
+    font-size: 0.75rem;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: #808080;
+    color: #ffffff;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 0.3rem;
+    gap: 1rem;
+`;
+export const CardContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+    @media screen and (min-width: 851px){
+        display: none;
+    }
+`;

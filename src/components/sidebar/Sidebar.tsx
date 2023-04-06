@@ -17,7 +17,6 @@ function Sidebar() {
   const [showMenu, setShowMenu] = useState(false);
 
   function handleClick() {
-    console.log("passei aq")
     showMenu ? setShowMenu(false) : setShowMenu(true);
   }
 

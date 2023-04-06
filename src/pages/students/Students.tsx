@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
-import { Content, Form, TableCard, Option } from './Components';
+import { Content, Form, TableCard, Option, Card, CardContainer } from './Components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,7 +24,9 @@ function Students() {
   VerifyToken();
   const isSmallScreen = useMediaQuery('(max-width:850px)');
   const { control, handleSubmit, reset } = useForm<IStudent>();
-
+  const [registerStudent, setRegisterStudent] = useState(false);
+  const [listStudents, setlistStudents] = useState(false);
+  const [cards, setCards] = useState(true);
   const [students, setStudents]: any = useState([{}]);
   const periods = [
     {period : "Matutino", id: 1},
@@ -46,6 +50,9 @@ function Students() {
     const newsStudent = await PostStudent(data);
     setStudents((prevStudents: any) => [...prevStudents, newsStudent]);
     reset();
+    setCards(true);
+    setRegisterStudent(false);
+    setlistStudents(false);
     toast.success('Registrado com Sucesso!', {
       position: "top-right",
       autoClose: 5000,
@@ -62,8 +69,50 @@ function Students() {
       <Sidebar/>
         <Content>
         <ToastContainer />
-
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        { cards &&
+          <CardContainer>
+            <Card onClick={() => {
+              if (registerStudent){
+                setRegisterStudent(false);
+              } else {
+                setlistStudents(false);
+                setRegisterStudent(true);
+                setCards(false);
+              }
+            }}>
+              <PersonAddAltOutlinedIcon style={{fontSize: "1.25rem"}} />
+              Adicionar Aluno
+            </Card>
+            <Card onClick={() => {
+              if (listStudents){
+                setlistStudents(false);
+              } else {
+                setRegisterStudent(false);
+                setlistStudents(true);
+                setCards(false);
+              }
+            }}>
+              <ListAltSharpIcon style={{fontSize: "1.25rem"}} />
+              Listar Alunos
+            </Card>
+          </CardContainer>
+        }
+        {!cards && isSmallScreen &&
+          <p
+            style={{color: "#1976d2"}}
+            onClick={() => {
+            setRegisterStudent(false);
+            setlistStudents(false);
+            setCards(true);
+          }}>
+            Voltar
+          </p>
+        }
+        <Form onSubmit={handleSubmit(onSubmit)}
+        style={
+          isSmallScreen ? (registerStudent? {display: 'flex'} :
+            {display: 'none'}) : {display: 'flex'}}
+        >
           <Controller
             name="name"
             control={control}
@@ -146,10 +195,12 @@ function Students() {
           >
             <AddCircleOutlineIcon/>
           </Button>
-          </Form>
-        <TableCard>
+        </Form>
+        <TableCard
+          style={isSmallScreen && !listStudents ? {display: 'none'} : {display: 'flex'}}
+        >
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell align="left">Nome</TableCell>
