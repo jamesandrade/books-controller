@@ -94,8 +94,8 @@ function Books() {
             </Card>
           </CardContainer>
         }
-        {!cards && isSmallScreen && 
-          <p 
+        {!cards && isSmallScreen &&
+          <p
             style={{color: "#1976d2"}}
             onClick={() => {
             setRegisterBook(false);
@@ -103,11 +103,11 @@ function Books() {
             setCards(true);
           }}>
             Voltar
-          </p> 
+          </p>
         }
-        
-        <Form onSubmit={handleSubmit(onSubmit)} 
-          style={ 
+
+        <Form onSubmit={handleSubmit(onSubmit)}
+          style={
             isSmallScreen ? (registerBook ? {display: 'flex'} :
               {display: 'none'}) : {display: 'flex'}}>
           <Controller
@@ -125,7 +125,7 @@ function Books() {
                 {...field}
               />
             )}
-          />            
+          />
           <Controller
             name="author"
             control={control}
@@ -157,7 +157,7 @@ function Books() {
                 {...field}
               />
             )}
-          /> 
+          />
           <Button
             sx={{ mb: 2 }}
             style={{ marginTop: '1rem', width: '4rem' }}
@@ -166,9 +166,8 @@ function Books() {
             variant="contained"
           >
             <AddCircleOutlineIcon/>
-          </Button>      
+          </Button>
         </Form>
-        
         <TableCard style={isSmallScreen && !listBooks ? {display: 'none'} : {display: 'flex'} }>
           <TableContainer component={Paper}>
             <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
@@ -187,7 +186,7 @@ function Books() {
                     >
                     <TableCell component="th" scope="row" align="left">
                       {row?.title}
-                    </TableCell>                     
+                    </TableCell>
                     <TableCell component="th" scope="row" align="left">
                       {row?.author}
                     </TableCell>
