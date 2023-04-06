@@ -8,6 +8,10 @@ export const App = styled.div`
     z-index: 1;
     font-family: 'Roboto', sans-serif;
     font-size: 0.75rem;
+    @media screen and (min-width: 851px){
+        height: 100vh;
+        overflow: hidden;
+    }
     @media screen and (max-width: 850px){
         padding: 0 0 0;
         position: fixed;
@@ -15,7 +19,6 @@ export const App = styled.div`
         height: 3rem;
       }
 `;
-  
 export const Ul = styled.ul`
     list-style: none;
     margin: 0;

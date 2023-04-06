@@ -17,6 +17,7 @@ function Sidebar() {
   const [showMenu, setShowMenu] = useState(false);
 
   function handleClick() {
+    console.log("passei aq")
     showMenu ? setShowMenu(false) : setShowMenu(true);
   }
 
@@ -36,7 +37,6 @@ function Sidebar() {
       localStorage.removeItem('token')
       navigate('/');
     },2000);
-
   };
 
   return (
