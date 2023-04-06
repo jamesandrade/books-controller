@@ -2,7 +2,6 @@ import api from "../services/api";
 import { IStudent } from "../../components/interfaces/IStudent";
 const ROUTE = "/students";
 
-
 export async function GetAllStudents() {
   const token = localStorage.getItem('token');
   try {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
-import api from '../../global/services/api'
 import { Screen } from '../../global/styles/Screen';
-import { Content, Input, Button, Form, TableCard, Select, Option } from './Components';
-
+import { Form, Content, TableCard, Option, CardContainer, Card } from './Components';
+import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,115 +13,219 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/hooks/VerifyToken';
-
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ILoan } from '../../components/interfaces/ILoan';
+import { useMediaQuery } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import { GetAllStudents } from '../../global/hooks/Students';
+import { GetAllBooks } from '../../global/hooks/Books';
+import { GetAllLoans, PostLoan } from '../../global/hooks/Loans';
+import { ToastContainer, toast } from 'react-toastify';
+import { TextField, Button } from '@material-ui/core';
 
 function Loans() {
   VerifyToken();
+  const isSmallScreen = useMediaQuery('(max-width:850px)');
+  const { control, handleSubmit, reset, formState  } = useForm<ILoan>();
   const [loans, setLoans]: any = useState([{}]);
-  const [student, setStudent] = useState('');
   const [students, setStudents]: any = useState([{}]);
-  const [book, setBook] = useState('');
   const [books, setBooks]: any = useState([{}]);
-
-  const [loan, setLoan] = useState(new Date().toISOString().substr(0, 10));
-  const [devolution, setDevolution] = useState('');
-
-  const token = localStorage.getItem('token');
-  const data = { student, book, loan};
-  useEffect(() => {
-    api.get('http://localhost:5000/students',{
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-    })
-    .then((response) => {
-      setStudents(response.data)
-    })
-    .catch(error => console.error(error));
-  }, [])
+  const [registerLoan, setRegisterLoan] = useState(false);
+  const [listLoans, setlistLoans] = useState(false);
+  const [cards, setCards] = useState(true);
 
   useEffect(() => {
-    api.get('http://localhost:5000/books',{
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-    })
-    .then((response) => {
-      setBooks(response.data)
-    })
-    .catch(error => console.error(error));
-  }, [])
+    async function fetchStudents() {
+      try {
+        const students = await GetAllStudents();
+        setStudents(students);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchStudents();
+  }, []);
+
   useEffect(() => {
-    api.get('http://localhost:5000/loans',{
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-    })
-    .then((response) => {
-      setLoans(response.data)
-    })
-    .catch(error => console.error(error));
-  }, [])
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    const token = localStorage.getItem('token');
-    api.post('http://localhost:5000/loans', data, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-    })
-    .then((response) => {
-      setLoans([...loans, response.data])
-      setBooks([])
-    })
-    .catch(error => console.error(error));
+    async function fetchBooks() {
+      try {
+        const books = await GetAllBooks();
+        setBooks(books);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchBooks();
+  }, []);
+
+  useEffect(() => {
+    async function fetchLoans() {
+      try {
+        const loans = await GetAllLoans();
+        setLoans(loans);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchLoans();
+  }, []);
+
+  const onSubmit = async (data: ILoan) => {
+    const newLoan = await PostLoan(data);
+    setLoans([...loans, newLoan]);
+    setBooks(books.filter((item) => item.id !== data.book));
+    reset();
+    setCards(true);
+    setRegisterLoan(false);
+    setlistLoans(false);
+
+    toast.success('Registrado com Sucesso!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
   return (
     <Screen>
       <Sidebar/>
-        <Content>
-          <Form onSubmit={handleSubmit}>
-            <Select 
-              onChange={(event) => setStudent(event.target.value)}
-              value={student}
-            >
-              <Option value="" disabled selected>
-                Selecione um aluno
-              </Option>
-              {students.map((option) => (
-                <Option key= {option.name} value={option.id}>
-                {option.name} - {option.year} {option.team} {option.period}
-                </Option>
-              ))}
-            </Select>
-            <Select 
-              value={book}
-              onChange={(event) => setBook(event.target.value)}
-            >
-              <Option value="" disabled selected>
-                Selecione um livro
-              </Option>
-              {books.map((option) => (
-                !option.is_loaned &&
-                  <Option key= {option.title} value={option.id}>
-                    {option.author} - {option.title} - {option.serial}
-                  </Option>
-              ))}
-            </Select>
-            <Input placeholder='Data de empréstimo'
-              value={loan}
-              type="date"
-              id="date-loan"
-              name="date-loan"
-              onChange={(event) => setLoan(event.target.value)}
-            />
-            <Button type="submit"><AddCircleOutlineIcon/></Button>
-          </Form>
-          <TableCard>
+      <Content>
+        <ToastContainer />
+        { cards &&
+          <CardContainer>
+            <Card onClick={() => {
+              if (registerLoan){
+                setRegisterLoan(false);
+              } else {
+                setlistLoans(false);
+                setRegisterLoan(true);
+                setCards(false);
+              }
+            }}>
+              <LibraryAddIcon style={{fontSize: "1.25rem"}} />
+              Cad. Empréstimo
+            </Card>
+            <Card onClick={() => {
+              if (listLoans){
+                setlistLoans(false);
+              } else {
+                setRegisterLoan(false);
+                setlistLoans(true);
+                setCards(false);
+              }
+            }}>
+              <ListAltSharpIcon style={{fontSize: "1.25rem"}} />
+              Listar Empréstimos
+            </Card>
+          </CardContainer>
+        }
+        {!cards && isSmallScreen &&
+          <p
+            style={{color: "#1976d2"}}
+            onClick={() => {
+            setRegisterLoan(false);
+            setlistLoans(false);
+            setCards(true);
+          }}>
+            Voltar
+          </p>
+        }
+        <Form onSubmit={handleSubmit(onSubmit)}
+          style={
+          isSmallScreen ? (registerLoan ? {display: 'flex'} :
+          {display: 'none'}) : {display: 'flex'}}
+        >
+          <Controller
+            name="student"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField {...field}
+                sx={{ mb: 2, mt: 2 }}
+                select
+                label="Aluno"
+                SelectProps={{
+                  native: true,
+                }}
+                error={Boolean(formState.errors?.student)}
+              >
+                <Option disabled style={{display: "none"}}></Option>
+                {students.map((option) => (
+                  option.id &&
+                    <Option
+                      key={option.id}
+                      value={option.id}
+                    >
+                      {option?.name} - {option?.year} {option?.team} {option?.period}
+                    </Option>
+                ))}
+              </TextField>
+            )}
+          />
+          <Controller
+            name="book"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField {...field}
+                sx={{ mb: 2, mt: 2 }}
+                select
+                label="Livro"
+                SelectProps={{
+                  native: true,
+                }}
+                error={Boolean(formState.errors?.book)}
+              >
+                <Option disabled style={{display: "none"}}></Option>
+                { books.map((option) => (
+                  !option.is_loaned && option.id &&
+                    <Option
+                      key={option.id}
+                      value={option.id}
+                    >
+                      {option?.title} - {option?.serial}
+                    </Option>
+                ))}
+              </TextField>
+            )}
+          />
+          <Controller
+            name="loan"
+            control={control}
+            defaultValue={new Date().toISOString().substr(0, 10)}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="Data de Empréstimo"
+                variant="outlined"
+                margin="normal"
+                sx={{ mb: 2 }}
+                type="date"
+                {...field}
+              />
+            )}
+          />
+          <Button
+            sx={{ mb: 2 }}
+            style={{ marginTop: '1rem', width: '4rem' }}
+            type="submit"
+            size="large"
+            variant="contained"
+          >
+            <AddCircleOutlineIcon/>
+          </Button>
+        </Form>
+        <TableCard
+          style={isSmallScreen && !listLoans ? {display: 'none'} : {display: 'flex'}}
+        >
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell align="left">Nome</TableCell>
@@ -133,12 +237,12 @@ function Loans() {
                 {loans.map((row) => (
                   !row.returned &&
                     <TableRow
-                      key={row?.id}
+                      key={row.id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell component="th" scope="row" align="left">
                       {row?.student?.name} - {row?.student?.year} {row?.student?.team}
-                    </TableCell>                     
+                    </TableCell>
                     <TableCell component="th" scope="row" align="left">
                       {row?.book?.title} - {row?.book?.serial}
                     </TableCell>
@@ -148,7 +252,8 @@ function Loans() {
               </TableBody>
             </Table>
           </TableContainer>
-        </TableCard>        
+        </TableCard>
+
       </Content>
     </Screen>
   );

@@ -2,6 +2,7 @@ import React ,{ useState } from 'react';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import InsightsIcon from '@mui/icons-material/Insights';
+import HomeIcon from '@mui/icons-material/Home';
 import { ToastContainer, toast } from 'react-toastify';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
@@ -45,6 +46,7 @@ function Sidebar() {
         </Menu>
         <ToastContainer />
           <Ul>
+          <Li onClick={() => navigate('/home')}><TextBar><HomeIcon/>Pág. Inicial</TextBar></Li>
             <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
             <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
             <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
@@ -55,6 +57,7 @@ function Sidebar() {
           </Ul>
           { showMenu &&
             <UlMobile>
+              <Li onClick={() => navigate('/home')}><TextBar><HomeIcon/>Pág. Inicial</TextBar></Li>
               <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
               <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
               <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>

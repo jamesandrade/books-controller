@@ -8,7 +8,7 @@ export const Content = styled.div`
     row-gap: 1rem;
     height: 85vh;
     width: 65vw;
-    padding-bottom: 1rem;
+    padding-bottom: 0;
     @media screen and (max-width: 850px){
         margin-top: 5rem;
         height: auto;

@@ -1,8 +1,8 @@
+import { ILoan } from "../../components/interfaces/ILoan";
 import api from "../services/api";
-import { IBook } from "../../components/interfaces/IBook";
-const ROUTE = "/books";
+const ROUTE = "/loans";
 
-export async function GetAllBooks() {
+export async function GetAllLoans() {
   const token = localStorage.getItem('token');
   try {
     const response = await api.get(ROUTE, {
@@ -17,7 +17,7 @@ export async function GetAllBooks() {
   }
 }
 
-export async function PostBook(data: IBook) {
+export async function PostLoan(data: ILoan) {
   const token = localStorage.getItem('token');
   try {
     const response = await api.post(ROUTE, data, {
