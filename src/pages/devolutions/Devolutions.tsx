@@ -24,7 +24,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Devolutions() {
   VerifyToken();
-  const { control, handleSubmit, reset } = useForm<ILoan>();
+  const { control, handleSubmit, reset, setValue } = useForm<ILoan>();
   const [students, setStudents]: any = useState([{}]);
   const addedStudents: { [key: string]: boolean } = {};
   const [selectBook, setSelectBook] = useState(false);
@@ -66,10 +66,12 @@ function Devolutions() {
     });
     setBooks(booksList);
   }
-
+  const updateValue = (fieldName, value) => {
+    setValue(fieldName, value);
+  };
   const onSubmit = async (data) => {
     console.log(data)
-    //const updatedLoan = await PutLoan(data);
+    const updatedLoan = await PutLoan(data);
     //setLoans([...loans, newLoan]);
     //setBooks(books.filter((item) => item.id !== data.book));
     reset();
@@ -135,6 +137,14 @@ function Devolutions() {
               defaultValue=""
               render={({ field }) => (
                 <TextField {...field}
+                  onChangeCapture={(e)=> {
+                    const target = e.target as HTMLInputElement;
+                    const bookId = target.value;
+                    const selectedLoan = loans.find((loan: any) => loan.book.id === bookId);
+                    selectedLoan.id &&
+                      updateValue('id', selectedLoan.id);
+                      updateValue('returned', true);
+                  }}
                   sx={{ mb: 2, mt: 2 }}
                   select
                   disabled={!selectBook}
