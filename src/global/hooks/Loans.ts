@@ -32,3 +32,19 @@ export async function PostLoan(data: ILoan) {
     return [];
   }
 }
+
+export async function PutLoan(data: ILoan) {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await api.put(ROUTE, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+    })
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}

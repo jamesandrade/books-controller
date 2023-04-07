@@ -3,4 +3,7 @@ export interface ILoan {
     student: string;
     book: string;
     loan: string;
+    returned?: boolean;
+    returned_at?: string;
+    reason_devolution?: number;
   }

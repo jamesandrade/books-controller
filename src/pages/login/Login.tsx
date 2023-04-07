@@ -58,7 +58,6 @@ function Login() {
               variant="outlined"
               margin="normal"
               sx={{ mb: 2 }}
-              autoFocus
               error={!!loginError}
               {...field}
             />

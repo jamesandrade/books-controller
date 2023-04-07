@@ -122,7 +122,6 @@ function Books() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}
@@ -138,7 +137,6 @@ function Books() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}
@@ -154,7 +152,6 @@ function Books() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}

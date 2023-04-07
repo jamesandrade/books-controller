@@ -124,7 +124,6 @@ function Students() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}
@@ -140,7 +139,6 @@ function Students() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}
@@ -156,7 +154,6 @@ function Students() {
                 variant="outlined"
                 margin="normal"
                 sx={{ mb: 2 }}
-                autoFocus
                 {...field}
               />
             )}
