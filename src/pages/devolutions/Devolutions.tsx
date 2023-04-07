@@ -70,9 +70,23 @@ function Devolutions() {
     setValue(fieldName, value);
   };
   const onSubmit = async (data) => {
-    console.log(data)
     const updatedLoan = await PutLoan(data);
-    //setLoans([...loans, newLoan]);
+    let loansList = loans;
+    const index = loansList.findIndex((loan: any) => loan.id === data.id);
+    if (index !== -1) {
+      loansList[index] = updatedLoan;
+    }
+
+    setLoans(loansList)
+    setBooks([])
+    let studentsList: IStudent[] = []
+    loans.forEach((loan: any) => {
+      if (!loan.returned && loan.student && !addedStudents[loan.student.name]) {
+        studentsList.push(loan?.student);
+        addedStudents[loan.student.name] = true;
+      }
+    })
+    setStudents(studentsList);
     //setBooks(books.filter((item) => item.id !== data.book));
     reset();
     //setCards(true);
