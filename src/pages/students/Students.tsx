@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
 import { Content, Form, TableCard, Option, Card, CardContainer } from './Components';
@@ -13,12 +13,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/hooks/VerifyToken';
-import { FormControl, useMediaQuery } from '@mui/material';
+import {  useMediaQuery } from '@mui/material';
 import { IStudent } from '../../components/interfaces/IStudent';
 import { useForm, Controller } from "react-hook-form";
 import { GetAllStudents, PostStudent } from '../../global/hooks/Students';
 import { ToastContainer, toast } from 'react-toastify';
-import { TextField, Select, MenuItem, Button, InputLabel } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 
 function Students() {
   VerifyToken();

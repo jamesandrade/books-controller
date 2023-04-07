@@ -253,7 +253,6 @@ function Loans() {
             </Table>
           </TableContainer>
         </TableCard>
-
       </Content>
     </Screen>
   );
