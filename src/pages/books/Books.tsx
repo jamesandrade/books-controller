@@ -16,8 +16,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { VerifyToken } from '../../global/hooks/VerifyToken';
-import { GetAllBooks, PostBook } from '../../global/hooks/Books';
+import { VerifyToken } from '../../global/api/VerifyToken';
+import { GetAllBooks, PostBook } from '../../global/api/Books';
 import { IBook } from "../../components/interfaces/IBook";
 import 'react-toastify/dist/ReactToastify.css';
 

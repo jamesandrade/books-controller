@@ -3,7 +3,7 @@ import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
 import {  Content } from './Components';
 import { useEffect } from "react";
-import { VerifyToken } from '../../global/hooks/VerifyToken';
+import { VerifyToken } from '../../global/api/VerifyToken';
 
 
 function Home() {
@@ -13,7 +13,6 @@ function Home() {
     <Screen>
       <Sidebar/>
       <Content>
-      
       </Content>
     </Screen>
   );

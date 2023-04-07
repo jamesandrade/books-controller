@@ -13,10 +13,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { VerifyToken } from '../../global/hooks/VerifyToken';
+import { VerifyToken } from '../../global/api/VerifyToken';
 import { Controller, useForm } from 'react-hook-form';
 import { TextField, Button } from '@material-ui/core';
-import { GetAllLoans, PutLoan } from '../../global/hooks/Loans';
+import { GetAllLoans, PutLoan } from '../../global/api/Loans';
 import { IStudent } from '../../components/interfaces/IStudent';
 import { IBook } from '../../components/interfaces/IBook';
 import { ILoan } from '../../components/interfaces/ILoan';
@@ -238,6 +238,7 @@ function Devolutions() {
                 label="Data de Devolução"
                 variant="outlined"
                 margin="normal"
+                disabled={!selectBook}
                 sx={{ mb: 2 }}
                 type="date"
                 {...field}
@@ -253,6 +254,7 @@ function Devolutions() {
                 sx={{ mb: 2, mt: 2 }}
                 select
                 defaultValue=""
+                disabled={!selectBook}
                 label="Razão"
                 SelectProps={{
                   native: true,

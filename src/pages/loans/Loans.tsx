@@ -12,14 +12,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { VerifyToken } from '../../global/hooks/VerifyToken';
+import { VerifyToken } from '../../global/api/VerifyToken';
 import 'react-toastify/dist/ReactToastify.css';
 import { ILoan } from '../../components/interfaces/ILoan';
 import { useMediaQuery } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import { GetAllStudents } from '../../global/hooks/Students';
-import { GetAllBooks } from '../../global/hooks/Books';
-import { GetAllLoans, PostLoan } from '../../global/hooks/Loans';
+import { GetAllStudents } from '../../global/api/Students';
+import { GetAllBooks } from '../../global/api/Books';
+import { GetAllLoans, PostLoan } from '../../global/api/Loans';
 import { ToastContainer, toast } from 'react-toastify';
 import { TextField, Button } from '@material-ui/core';
 

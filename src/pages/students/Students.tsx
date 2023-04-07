@@ -12,11 +12,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { VerifyToken } from '../../global/hooks/VerifyToken';
+import { VerifyToken } from '../../global/api/VerifyToken';
 import {  useMediaQuery } from '@mui/material';
 import { IStudent } from '../../components/interfaces/IStudent';
 import { useForm, Controller } from "react-hook-form";
-import { GetAllStudents, PostStudent } from '../../global/hooks/Students';
+import { GetAllStudents, PostStudent } from '../../global/api/Students';
 import { ToastContainer, toast } from 'react-toastify';
 import { TextField, Button } from '@material-ui/core';
 
