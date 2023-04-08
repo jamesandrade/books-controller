@@ -57,6 +57,7 @@ function Login() {
               label="Email"
               variant="outlined"
               margin="normal"
+              type="email"
               sx={{ mb: 2 }}
               error={!!loginError}
               {...field}
@@ -70,7 +71,7 @@ function Login() {
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              label="Password"
+              label="Senha"
               variant="outlined"
               margin="normal"
               sx={{ mb: 2 }}
