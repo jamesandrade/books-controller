@@ -246,13 +246,24 @@ function Loans() {
                     <TableCell component="th" scope="row" align="left">
                       {row?.book?.title} - {row?.book?.serial}
                     </TableCell>
-                    <TableCell align="left">{new Date(row?.loan).toLocaleDateString('pt-br')}</TableCell>
+                    <TableCell align="left">
+                      {row?.loan &&
+                        row.loan
+                          .split(" ")[1]
+                          .replace(",", "")
+                          .concat("/")
+                          .concat((new Date(row.loan)).getUTCMonth() < 9 ? "0" + ((new Date(row.loan)).getUTCMonth() + 1) : ((new Date(row.loan)).getUTCMonth() + 1))
+                          .concat("/")
+                          .concat((new Date(row.loan)).getUTCFullYear())
+                      }
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         </TableCard>
+
       </Content>
     </Screen>
   );

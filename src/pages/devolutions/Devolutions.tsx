@@ -4,6 +4,9 @@ import { Screen } from '../../global/styles/Screen';
 import { Content, Form, TableCard, Option, CardContainer, Card } from './Components';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import { parseISO, format } from 'date-fns';
+import { utcToZonedTime } from "date-fns-tz";
+
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Table from '@mui/material/Table';
@@ -41,7 +44,6 @@ function Devolutions() {
     {reason: "Terminou a Leitura", id: 2},
     {reason: "Expirou o prazo para devolução", id: 3}
   ]
-
   useEffect(() => {
     async function fetchLoans() {
       try {
@@ -75,7 +77,9 @@ function Devolutions() {
   const updateValue = (fieldName, value) => {
     setValue(fieldName, value);
   };
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
+    data.returned_at =  new Date(data?.returned_at);
+    data.returned_at = <data className="returned"></data>
     const updatedLoan = await PutLoan(data);
     let loansList = loans;
     const index = loansList.findIndex((loan: any) => loan.id === data.id);
@@ -174,6 +178,7 @@ function Devolutions() {
                 }}
                 sx={{ mb: 2, mt: 2 }}
                 select
+                disabled={students.length <= 0}
                 label="Aluno"
                 SelectProps={{
                   native: true,
@@ -209,7 +214,7 @@ function Devolutions() {
                 }}
                 sx={{ mb: 2, mt: 2 }}
                 select
-                disabled={!selectBook}
+                disabled={!selectBook || students.length <= 0}
                 label="Livro"
                 SelectProps={{
                   native: true,
@@ -238,7 +243,7 @@ function Devolutions() {
                 label="Data de Devolução"
                 variant="outlined"
                 margin="normal"
-                disabled={!selectBook}
+                disabled={!selectBook || students.length <= 0}
                 sx={{ mb: 2 }}
                 type="date"
                 {...field}
@@ -254,7 +259,7 @@ function Devolutions() {
                 sx={{ mb: 2, mt: 2 }}
                 select
                 defaultValue=""
-                disabled={!selectBook}
+                disabled={!selectBook || students.length <= 0}
                 label="Razão"
                 SelectProps={{
                   native: true,
@@ -308,7 +313,17 @@ function Devolutions() {
                     <TableCell component="th" scope="row" align="left">
                       {row?.book?.title} - {row?.book?.serial}
                     </TableCell>
-                    <TableCell align="left">{new Date(row?.returned_at).toLocaleDateString('pt-br')}</TableCell>
+                    <TableCell align="left">
+                      {row?.returned_at &&
+                        row.returned_at
+                          .split(" ")[1]
+                          .replace(",", "")
+                          .concat("/")
+                          .concat((new Date(row.returned_at)).getUTCMonth() < 9 ? "0" + ((new Date(row.returned_at)).getUTCMonth() + 1) : ((new Date(row.returned_at)).getUTCMonth() + 1))
+                          .concat("/")
+                          .concat((new Date(row.returned_at)).getUTCFullYear())
+                      }
+                    </TableCell>
                     <TableCell component="th" scope="row" align="left">
                       {reasons.find(reason => reason.id === row?.reason_devolution)?.reason}
                     </TableCell>

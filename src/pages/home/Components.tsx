@@ -80,7 +80,5 @@ export const CardContainer = styled.div`
     flex-direction: row;
     justify-content: center;
     gap: 2rem;
-    @media screen and (min-width: 851px){
-        display: none;
-    }
+
 `;
