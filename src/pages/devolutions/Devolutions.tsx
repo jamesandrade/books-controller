@@ -78,8 +78,6 @@ function Devolutions() {
     setValue(fieldName, value);
   };
   const onSubmit = async (data: any) => {
-    data.returned_at =  new Date(data?.returned_at);
-    data.returned_at = <data className="returned"></data>
     const updatedLoan = await PutLoan(data);
     let loansList = loans;
     const index = loansList.findIndex((loan: any) => loan.id === data.id);
