@@ -16,13 +16,13 @@ import { VerifyToken } from '../../global/api/VerifyToken';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { IStudent } from '../../components/interfaces/IStudent';
-import TextField from '@mui/material/TextField';
 import { useForm, Controller } from "react-hook-form";
 import { GetAllStudents, PostStudent } from '../../global/api/Students';
 import { ToastContainer, toast } from 'react-toastify';
-import { Button, Typography  } from '@material-ui/core';
-import MaskedInput from 'react-text-mask';
-import { createTextMask } from 'redux-form-input-masks';
+import { Typography  } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import InputMask from "react-input-mask";
 
 function Students() {
   VerifyToken();
@@ -36,9 +36,6 @@ function Students() {
     {period: "Vespertino", id: 2},
     {period: "Noturno", id: 3}
   ]
-  const cpfMask = createTextMask({
-    pattern: '999.999.999-99',
-  });
 
   useEffect(() => {
     async function fetchStudents() {
@@ -135,21 +132,25 @@ function Students() {
           <Controller
             name="cpf"
             control={control}
-
             rules={{ required: true }}
+            defaultValue=""
             render={({ field }) => (
-              <TextField
-                label="CPF"
-                InputProps={{
-                  inputComponent: MaskedInput,
-                  inputProps: {
-                    mask: cpfMask,
-                  },
-                }}
-                variant="outlined"
-                margin="normal"
-                {...field}
-              />
+              <InputMask
+                mask="999.999.999-99"
+                maskChar=" "
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              >
+                {() => (
+                  <TextField
+                    label="CPF"
+                    variant="outlined"
+                    margin="normal"
+                    {...field}
+                  />
+                )}
+              </InputMask>
             )}
           />
           <Controller
@@ -173,12 +174,22 @@ function Students() {
             defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
-              <TextField
-                label="Telefone"
-                variant="outlined"
-                margin="normal"
-                {...field}
-              />
+              <InputMask
+                mask="(99) 9.9999-9999"
+                maskChar=" "
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              >
+                {() => (
+                  <TextField
+                    label="Telefone"
+                    variant="outlined"
+                    margin="normal"
+                    {...field}
+                  />
+                )}
+              </InputMask>
             )}
           />
           <Controller
@@ -202,6 +213,7 @@ function Students() {
             render={({ field }) => (
               <TextField {...field}
                 select
+                sx={{mt: 2}}
                 defaultValue=""
                 label="Período"
                 SelectProps={{
@@ -226,10 +238,11 @@ function Students() {
             rules={{ required: true }}
             render={({ field }) => (
               <FormControlLabel
+                sx={{mt: 2}}
                 style={{display: 'grid', gridAutoFlow: 'column'}}
                 label={
                   <Typography variant="body1" style={{ fontSize: '12px' }}>
-                    O titular autoriza a coleta e o processamento dos dados pessoais informados neste formulário para a finalidade de registro na base de dados e contato.
+                    <strong>O titular</strong> autoriza a coleta e o processamento dos dados pessoais informados neste formulário para a finalidade de registro na base de dados e contato.
                   </Typography>
                 }
                 labelPlacement="end"
