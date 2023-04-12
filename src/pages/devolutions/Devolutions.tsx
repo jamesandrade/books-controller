@@ -4,10 +4,6 @@ import { Screen } from '../../global/styles/Screen';
 import { Content, Form, TableCard, Option, CardContainer, Card } from './Components';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
-import { parseISO, format } from 'date-fns';
-import { utcToZonedTime } from "date-fns-tz";
-
-
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,7 +14,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/api/VerifyToken';
 import { Controller, useForm } from 'react-hook-form';
-import { TextField, Button } from '@material-ui/core';
 import { GetAllLoans, PutLoan } from '../../global/api/Loans';
 import { IStudent } from '../../components/interfaces/IStudent';
 import { IBook } from '../../components/interfaces/IBook';
@@ -26,6 +21,8 @@ import { ILoan } from '../../components/interfaces/ILoan';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {  useMediaQuery } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 function Devolutions() {
   VerifyToken();
@@ -167,6 +164,7 @@ function Devolutions() {
             defaultValue=""
             render={({ field }) => (
               <TextField {...field}
+                sx={{ mb: 2, mt: 2 }}
                 onChangeCapture={(e)=> {
                   const target = e.target as HTMLInputElement;
                   const studentId = target.value;
@@ -174,7 +172,6 @@ function Devolutions() {
                   fetchBooks(selectedStudent);
                   setSelectBook(true);
                 }}
-                sx={{ mb: 2, mt: 2 }}
                 select
                 disabled={students.length <= 0}
                 label="Aluno"
@@ -202,6 +199,7 @@ function Devolutions() {
             defaultValue=""
             render={({ field }) => (
               <TextField {...field}
+                sx={{ mb: 2, mt: 2 }}
                 onChangeCapture={(e)=> {
                   const target = e.target as HTMLInputElement;
                   const bookId = target.value;
@@ -210,7 +208,6 @@ function Devolutions() {
                     updateValue('returned', true);
                     updateValue('id', selectedLoan.id);
                 }}
-                sx={{ mb: 2, mt: 2 }}
                 select
                 disabled={!selectBook || students.length <= 0}
                 label="Livro"
@@ -239,10 +236,10 @@ function Devolutions() {
             render={({ field }) => (
               <TextField
                 label="Data de Devolução"
+                sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
                 disabled={!selectBook || students.length <= 0}
-                sx={{ mb: 2 }}
                 type="date"
                 {...field}
               />
@@ -254,8 +251,8 @@ function Devolutions() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
                 select
+                sx={{ mb: 2, mt: 2 }}
                 defaultValue=""
                 disabled={!selectBook || students.length <= 0}
                 label="Razão"
@@ -276,8 +273,8 @@ function Devolutions() {
             )}
           />
           <Button
-            sx={{ mb: 2 }}
             style={{ marginTop: '1rem', width: '4rem' }}
+            sx={{ mb: 2 }}
             type="submit"
             size="large"
             variant="contained"

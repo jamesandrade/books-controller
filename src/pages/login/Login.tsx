@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { TextField, Button } from "@material-ui/core";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle, Form } from "./Components";
 import { useNavigate } from 'react-router-dom';
 import api from "../../global/services/api";
 import jwt_decode from "jwt-decode";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
 
 interface LoginForm {
   email: string;
@@ -58,7 +60,6 @@ function Login() {
               variant="outlined"
               margin="normal"
               type="email"
-              sx={{ mb: 2 }}
               error={!!loginError}
               {...field}
             />
@@ -74,7 +75,6 @@ function Login() {
               label="Senha"
               variant="outlined"
               margin="normal"
-              sx={{ mb: 2 }}
               fullWidth
               type="password"
               error={!!loginError}
@@ -84,6 +84,7 @@ function Login() {
           )}
         />
         <Button
+          sx={{mt: 1}}
           type="submit"
           variant="contained"
           fullWidth

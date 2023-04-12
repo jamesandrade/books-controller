@@ -7,7 +7,7 @@ export const Content = styled.div`
     align-items: center;
     row-gap: 1rem;
     height: 85vh;
-    width: 65vw;
+    width: 45vw;
     padding-bottom: 0;
     @media screen and (max-width: 850px){
         margin-top: 5rem;
@@ -17,8 +17,8 @@ export const Content = styled.div`
 `;
 export const Form = styled.form`
     display: flex;
-    flex-direction: row;
-    gap: 1rem;
+    flex-direction: column;
+    overflow: scroll;
     @media screen and (max-width: 850px){
         gap: 0;
         flex-direction: column;
@@ -80,7 +80,4 @@ export const CardContainer = styled.div`
     flex-direction: row;
     justify-content: center;
     gap: 2rem;
-    @media screen and (min-width: 851px){
-        display: none;
-    }
 `;

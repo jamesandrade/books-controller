@@ -3,7 +3,6 @@ import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
 import { Content, Form, TableCard, CardContainer, Card } from './Components';
 import { useForm, Controller } from "react-hook-form";
-import { TextField, Button } from "@material-ui/core";
 import { useMediaQuery } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -20,6 +19,8 @@ import { VerifyToken } from '../../global/api/VerifyToken';
 import { GetAllBooks, PostBook } from '../../global/api/Books';
 import { IBook } from "../../components/interfaces/IBook";
 import 'react-toastify/dist/ReactToastify.css';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 function Books() {
   VerifyToken();
@@ -119,9 +120,9 @@ function Books() {
             render={({ field }) => (
               <TextField
                 label="Título"
+                sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 {...field}
               />
             )}
@@ -134,9 +135,9 @@ function Books() {
             render={({ field }) => (
               <TextField
                 label="Autor"
+                sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 {...field}
               />
             )}
@@ -149,16 +150,16 @@ function Books() {
             render={({ field }) => (
               <TextField
                 label="Número de Série"
+                sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 {...field}
               />
             )}
           />
           <Button
-            sx={{ mb: 2 }}
             style={{ marginTop: '1rem', width: '4rem' }}
+            sx={{ mb: 2 }}
             type="submit"
             size="large"
             variant="contained"

@@ -21,7 +21,8 @@ import { GetAllStudents } from '../../global/api/Students';
 import { GetAllBooks } from '../../global/api/Books';
 import { GetAllLoans, PostLoan } from '../../global/api/Loans';
 import { ToastContainer, toast } from 'react-toastify';
-import { TextField, Button } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 function Loans() {
   VerifyToken();
@@ -203,17 +204,17 @@ function Loans() {
             render={({ field }) => (
               <TextField
                 label="Data de Empréstimo"
+                sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 type="date"
                 {...field}
               />
             )}
           />
           <Button
-            sx={{ mb: 2 }}
             style={{ marginTop: '1rem', width: '4rem' }}
+            sx={{ mb: 2 }}
             type="submit"
             size="large"
             variant="contained"

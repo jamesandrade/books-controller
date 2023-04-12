@@ -13,16 +13,19 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/api/VerifyToken';
-import {  useMediaQuery } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { IStudent } from '../../components/interfaces/IStudent';
+import TextField from '@mui/material/TextField';
 import { useForm, Controller } from "react-hook-form";
 import { GetAllStudents, PostStudent } from '../../global/api/Students';
 import { ToastContainer, toast } from 'react-toastify';
-import { TextField, Button } from '@material-ui/core';
+import { Button, Typography  } from '@material-ui/core';
+import MaskedInput from 'react-text-mask';
+import { createTextMask } from 'redux-form-input-masks';
 
 function Students() {
   VerifyToken();
-  const isSmallScreen = useMediaQuery('(max-width:850px)');
   const { control, handleSubmit, reset } = useForm<IStudent>();
   const [registerStudent, setRegisterStudent] = useState(false);
   const [listStudents, setlistStudents] = useState(false);
@@ -33,6 +36,9 @@ function Students() {
     {period: "Vespertino", id: 2},
     {period: "Noturno", id: 3}
   ]
+  const cpfMask = createTextMask({
+    pattern: '999.999.999-99',
+  });
 
   useEffect(() => {
     async function fetchStudents() {
@@ -97,7 +103,7 @@ function Students() {
             </Card>
           </CardContainer>
         }
-        {!cards && isSmallScreen &&
+        {!cards &&
           <p
             style={{color: "#1976d2"}}
             onClick={() => {
@@ -110,8 +116,7 @@ function Students() {
         }
         <Form onSubmit={handleSubmit(onSubmit)}
         style={
-          isSmallScreen ? (registerStudent? {display: 'flex'} :
-            {display: 'none'}) : {display: 'flex'}}
+          registerStudent? {display: 'flex'} : {display: 'none'}}
         >
           <Controller
             name="name"
@@ -123,22 +128,55 @@ function Students() {
                 label="Nome"
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 {...field}
               />
             )}
           />
           <Controller
-            name="year"
+            name="cpf"
+            control={control}
+
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="CPF"
+                InputProps={{
+                  inputComponent: MaskedInput,
+                  inputProps: {
+                    mask: cpfMask,
+                  },
+                }}
+                variant="outlined"
+                margin="normal"
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="email"
             control={control}
             defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="Ano/Série"
+                label="Email"
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
+                type="email"
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="phone"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                label="Telefone"
+                variant="outlined"
+                margin="normal"
                 {...field}
               />
             )}
@@ -150,10 +188,9 @@ function Students() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="Turma"
+                label="Série e Turma"
                 variant="outlined"
                 margin="normal"
-                sx={{ mb: 2 }}
                 {...field}
               />
             )}
@@ -164,7 +201,6 @@ function Students() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
                 select
                 defaultValue=""
                 label="Período"
@@ -183,8 +219,30 @@ function Students() {
               </TextField>
             )}
           />
+          <Controller
+            name="terms"
+            control={control}
+            defaultValue={false}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormControlLabel
+                style={{display: 'grid', gridAutoFlow: 'column'}}
+                label={
+                  <Typography variant="body1" style={{ fontSize: '12px' }}>
+                    O titular autoriza a coleta e o processamento dos dados pessoais informados neste formulário para a finalidade de registro na base de dados e contato.
+                  </Typography>
+                }
+                labelPlacement="end"
+                control={
+                  <Checkbox
+                    sx={{ mr: '8px' }}
+                    {...field}
+                  />
+                }
+              />
+              )}
+          />
           <Button
-            sx={{ mb: 2}}
             style={{ marginTop: '1rem', width: '4rem' }}
             type="submit"
             size="large"
@@ -194,7 +252,7 @@ function Students() {
           </Button>
         </Form>
         <TableCard
-          style={isSmallScreen && !listStudents ? {display: 'none'} : {display: 'flex'}}
+          style={!listStudents ? {display: 'none'} : {display: 'flex'}}
         >
           <TableContainer component={Paper}>
             <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
