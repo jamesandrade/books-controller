@@ -28,7 +28,7 @@ export const Ul = styled.ul`
         display: none;
     }
 `;
-  
+
 export const UlMobile = styled.ul`
     position: absolute;
     list-style: none;
@@ -42,10 +42,11 @@ export const UlMobile = styled.ul`
     }
 `;
 export const Li = styled.li`
+    cursor: pointer;
     margin: 0;
     padding: 0;
 `;
-  
+
 export const TextBar = styled.a`
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -70,5 +71,3 @@ export const Menu = styled.div`
     margin-left: 0.25rem;
     margin-top: 0.75rem;
 `;
-
-  

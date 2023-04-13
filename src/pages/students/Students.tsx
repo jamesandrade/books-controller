@@ -4,6 +4,7 @@ import { Screen } from '../../global/styles/Screen';
 import { Content, Form, TableCard, Option, Card, CardContainer } from './Components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -27,6 +28,7 @@ import InputMask from "react-input-mask";
 function Students() {
   VerifyToken();
   const { control, handleSubmit, reset } = useForm<IStudent>();
+
   const [registerStudent, setRegisterStudent] = useState(false);
   const [listStudents, setlistStudents] = useState(false);
   const [cards, setCards] = useState(true);
@@ -50,12 +52,9 @@ function Students() {
   }, []);
 
   const onSubmit = async (data: IStudent) => {
+    reset({ terms: false });
     const newsStudent = await PostStudent(data);
     setStudents((prevStudents: any) => [...prevStudents, newsStudent]);
-    reset();
-    setCards(true);
-    setRegisterStudent(false);
-    setlistStudents(false);
     toast.success('Registrado com Sucesso!', {
       position: "top-right",
       autoClose: 5000,
@@ -102,13 +101,13 @@ function Students() {
         }
         {!cards &&
           <p
-            style={{color: "#1976d2"}}
+            style={{color: "#1976d2", display: 'flex', alignItems: 'center', cursor: "pointer"}}
             onClick={() => {
             setRegisterStudent(false);
             setlistStudents(false);
             setCards(true);
           }}>
-            Voltar
+            <ArrowBackSharpIcon/> Voltar
           </p>
         }
         <Form onSubmit={handleSubmit(onSubmit)}
@@ -132,24 +131,21 @@ function Students() {
           <Controller
             name="cpf"
             control={control}
-            rules={{ required: true }}
+            rules={{ required: false }}
             defaultValue=""
             render={({ field }) => (
               <InputMask
                 mask="999.999.999-99"
-                maskChar=" "
+                maskPlaceholder={null}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
               >
-                {() => (
                   <TextField
                     label="CPF"
                     variant="outlined"
                     margin="normal"
-                    {...field}
-                  />
-                )}
+                    {...field} />
               </InputMask>
             )}
           />
@@ -157,7 +153,7 @@ function Students() {
             name="email"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
+            rules={{ required: false }}
             render={({ field }) => (
               <TextField
                 label="Email"
@@ -172,23 +168,21 @@ function Students() {
             name="phone"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
+            rules={{ required: false }}
             render={({ field }) => (
               <InputMask
                 mask="(99) 9.9999-9999"
-                maskChar=" "
+                maskPlaceholder={null}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
               >
-                {() => (
                   <TextField
                     label="Telefone"
                     variant="outlined"
                     margin="normal"
                     {...field}
                   />
-                )}
               </InputMask>
             )}
           />
@@ -209,17 +203,19 @@ function Students() {
           <Controller
             name="period"
             control={control}
+            defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
               <TextField {...field}
                 select
                 sx={{mt: 2}}
-                defaultValue=""
                 label="Período"
                 SelectProps={{
                   native: true,
                 }}
+                //error={Boolean(formState.errors?.period)}
               >
+                <Option disabled style={{display: "none"}}></Option>
                 { periods?.map((period) => (
                   <Option
                     key={period.id}
@@ -227,7 +223,7 @@ function Students() {
                   >
                     {period?.period}
                   </Option>
-              ))}
+                ))}
               </TextField>
             )}
           />
@@ -249,6 +245,7 @@ function Students() {
                 control={
                   <Checkbox
                     sx={{ mr: '8px' }}
+                    checked={field.value}
                     {...field}
                   />
                 }

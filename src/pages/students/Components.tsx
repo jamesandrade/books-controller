@@ -62,6 +62,13 @@ export const Select = styled.select`
     color: #5D478B;
 `;
 export const Card = styled.div`
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    cursor: pointer;
     display: flex;
     font-size: 0.75rem;
     justify-content: center;
