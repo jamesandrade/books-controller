@@ -22,9 +22,13 @@ import { IBook } from "../../components/interfaces/IBook";
 import 'react-toastify/dist/ReactToastify.css';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import { btoa } from 'js-base64';
 
 function Books() {
   VerifyToken();
+  const navigate = useNavigate();
+
   const isSmallScreen = useMediaQuery('(max-width:850px)');
   const { control, handleSubmit, reset } = useForm<IBook>();
   const [books, setBooks]: any = useState([{}]);
@@ -199,7 +203,13 @@ function Books() {
                     <TableCell
                       align="left"
                       >
-                        <EditIcon />
+                        <EditIcon
+                          style={{cursor: 'pointer'}}
+                            onClick={() => {
+                            let serial = btoa(row?.serial);
+                            navigate(`/books/edit/${serial}`)
+                          }}
+                        />
                     </TableCell>
                   </TableRow>
                 ))}

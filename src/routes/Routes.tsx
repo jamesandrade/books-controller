@@ -3,12 +3,16 @@ import { Route, BrowserRouter, Routes} from "react-router-dom";
 
 import Login from "../pages/login/Login";
 import Home from "../pages/home/Home";
+
 import Students from "../pages/students/Students";
 import ListStudents from "../pages/students/list/ListStudents";
 import CreateStudent from "../pages/students/create/CreateStudent";
 import EditStudent from "../pages/students/edit/EditStudent";
 
 import Books from "../pages/books/Books";
+import EditBook from "../pages/books/edit/EditBook";
+
+
 import Loans from "../pages/loans/Loans";
 import Devolutions from "../pages/devolutions/Devolutions";
 const routes = () => {
@@ -22,6 +26,8 @@ const routes = () => {
                 <Route path="/students/create"  element={<CreateStudent />} />
                 <Route path="/students/edit/:ra?"  element={<EditStudent />} />
                 <Route path="/books"  element={<Books />} />
+                <Route path="/books/edit/:serial?"  element={<EditBook />} />
+
                 <Route path="/loans"  element={<Loans />} />
                 <Route path="/devolutions"  element={<Devolutions />} />
             </Routes>

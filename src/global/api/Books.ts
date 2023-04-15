@@ -32,3 +32,34 @@ export async function PostBook(data: IBook) {
     return [];
   }
 }
+
+export async function PutBook(data: IBook) {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await api.put(ROUTE, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+    })
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function GetOneBook(serial: string) {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await api.get(`${ROUTE}/${serial}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+}
