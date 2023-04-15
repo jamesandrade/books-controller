@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import EditIcon from '@mui/icons-material/Edit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -177,6 +178,7 @@ function Books() {
                   <TableCell  align="left">Título</TableCell>
                   <TableCell align="left">Autor</TableCell>
                   <TableCell align="left">Número de Série</TableCell>
+                  <TableCell align="left">Opções</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -193,6 +195,11 @@ function Books() {
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
                       {row?.serial}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      >
+                        <EditIcon />
                     </TableCell>
                   </TableRow>
                 ))}

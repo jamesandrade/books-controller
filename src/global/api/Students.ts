@@ -17,10 +17,40 @@ export async function GetAllStudents() {
   }
 }
 
+export async function GetOneStudent(ra: string) {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await api.get(`${ROUTE}/${ra}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+}
 export async function PostStudent(data: IStudent) {
   const token = localStorage.getItem('token');
   try {
     const response = await api.post(ROUTE, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+    })
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function PutStudent(data: IStudent) {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await api.put(`${ROUTE}/${data.ra}`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
