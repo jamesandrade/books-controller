@@ -73,9 +73,22 @@ function ListStudents() {
   VerifyToken();
   const navigate = useNavigate();
   const [students, setStudents]: any = useState([{}]);
+  const [filteredStudents, setFilteredStudents]: any = useState([{}]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedStudent, setSelectedStudent]: any = useState({});
-
+  function setFilter(query){
+    if(query === ""){
+      setFilteredStudents(students)
+    }
+    const filteredData = students.filter((item) => {
+      return item.name.toLowerCase().includes(query.toLowerCase())
+        | item.ra.toLowerCase().includes(query.toLowerCase())
+        | item.registration.team.toLowerCase().includes(query.toLowerCase())
+        | item.registration.period.toLowerCase().includes(query.toLowerCase())
+    })
+    setFilteredStudents(filteredData);
+  }
   function openModal(student) {
     setSelectedStudent(student);
     setIsOpen(true);
@@ -90,6 +103,7 @@ function ListStudents() {
       try {
         const students = await GetAllStudents();
         setStudents(students);
+        setFilteredStudents(students)
       } catch (error) {
         console.error(error);
       }
@@ -104,7 +118,7 @@ function ListStudents() {
         <Modal
           isOpen={isOpen}
           onRequestClose={closeModal}
-          contentLabel="Exemplo Modal"
+          contentLabel="Modal"
           style={isSmallScreen? customStylesSmallScreen: customStyles}
         >
           <div
@@ -183,6 +197,7 @@ function ListStudents() {
             label={isOpen ? "": "Pesquisar"}
             variant="outlined"
             margin="normal"
+            onChange={(event) => setFilter(event.target.value)}
           />
           <TableContainer component={Paper}>
             <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
@@ -196,7 +211,7 @@ function ListStudents() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {students.map((row) => (
+                {filteredStudents.map((row) => (
                   row.name &&
                     <TableRow
                       key={row?.name}
@@ -253,7 +268,6 @@ function ListStudents() {
                           }}
                         />
                       </div>
-
                     </TableCell>
                   </TableRow>
                 ))}
