@@ -79,7 +79,7 @@ function ListStudents() {
   const [selectedStudent, setSelectedStudent]: any = useState({});
   function setFilter(query){
     if(query === ""){
-      setFilteredStudents(students)
+      return setFilteredStudents(students)
     }
     const filteredData = students.filter((item) => {
       return item.name.toLowerCase().includes(query.toLowerCase())

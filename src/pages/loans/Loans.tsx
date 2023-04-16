@@ -4,6 +4,8 @@ import { Screen } from '../../global/styles/Screen';
 import { Form, Content, TableCard, Option, CardContainer, Card } from './Components';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { btoa } from 'js-base64';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,31 +17,89 @@ import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/api/VerifyToken';
 import 'react-toastify/dist/ReactToastify.css';
 import { ILoan } from '../../components/interfaces/ILoan';
-import { useMediaQuery } from '@mui/material';
+import { Autocomplete, useMediaQuery } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { GetAllStudents } from '../../global/api/Students';
 import { GetAllBooks } from '../../global/api/Books';
 import { GetAllLoans, PostLoan } from '../../global/api/Loans';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    outline: 'none',
+    padding: '20px',
+    width: '31.25rem',
+    height: '31.25rem',
+    fontFamily: 'Roboto, sans-serif'
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  }
+};
 
+const customStylesSmallScreen = {
+  content: {
+    top: '25rem',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    outline: 'none',
+    width: '20rem',
+    height: '29rem',
+    fontFamily: 'Roboto, sans-serif'
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  }
+};
 function Loans() {
   VerifyToken();
+  const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:850px)');
   const { control, handleSubmit, reset, formState  } = useForm<ILoan>();
   const [loans, setLoans]: any = useState([{}]);
   const [students, setStudents]: any = useState([{}]);
+  const [filteredStudents, setFilteredStudents]: any = useState([{}]);
+  const [bookSelected, setBookSelected] = useState(false);
   const [books, setBooks]: any = useState([{}]);
   const [registerLoan, setRegisterLoan] = useState(false);
   const [listLoans, setlistLoans] = useState(false);
   const [cards, setCards] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent]: any = useState({});
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   useEffect(() => {
     async function fetchStudents() {
       try {
-        const students = await GetAllStudents();
+        let students = await GetAllStudents();
         setStudents(students);
+        students = students.map(item => ({
+          label: `${item.pending? "* ": ""} ${item.ra} - ${item.name}`, id: item.id }));
+        setFilteredStudents(students)
       } catch (error) {
         console.error(error);
       }
@@ -50,7 +110,9 @@ function Loans() {
   useEffect(() => {
     async function fetchBooks() {
       try {
-        const books = await GetAllBooks();
+        let books = await GetAllBooks();
+        books = books.map(item => ({
+          label: `${item.serial} - ${item.title}`, id: item.id }));
         setBooks(books);
       } catch (error) {
         console.error(error);
@@ -71,11 +133,21 @@ function Loans() {
     fetchLoans();
   }, []);
 
-  const onSubmit = async (data: ILoan) => {
-    const newLoan = await PostLoan(data);
-    setLoans([...loans, newLoan]);
-    setBooks(books.filter((item) => item.id !== data.book));
-    reset();
+  function verifyIsPending(query: any) {
+    const obj = students.find(obj => obj.id === query.id);
+    setSelectedStudent(obj);
+    if(obj?.pending === true) {
+      return openModal();
+    }
+  }
+  const onSubmit = async (data: any) => {
+    data.student = data.student.id
+    data.book = data.book.id
+    console.log(data)
+    //const newLoan = await PostLoan(data);
+    //setLoans([...loans, newLoan]);
+    //setBooks(books.filter((item) => item.id !== data.book));
+    //reset();
     setCards(true);
     setRegisterLoan(false);
     setlistLoans(false);
@@ -95,6 +167,40 @@ function Loans() {
     <Screen>
       <Sidebar/>
       <Content>
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={closeModal}
+          contentLabel="Modal"
+          style={isSmallScreen? customStylesSmallScreen: customStyles}
+        >
+          <div
+            style={{display: 'flex', flexDirection: 'column', gap:'1rem', alignItems: 'end'}}
+          >
+            <DisabledByDefaultIcon
+              style={{cursor: "pointer"}}
+              onClick={closeModal}
+            />
+            <div
+              style={{display: 'flex', flexDirection: 'column', gap:'1rem', alignItems: 'start'}}
+            >
+               <p style={{color: 'red'}}>Pendente de Atualização</p>
+               <br/>
+               <p>Para prosseguir com o empréstimo de livro para o aluno {selectedStudent.name}, por favor, atualize os dados cadastrais!</p>
+               <br/>
+              <Button
+                type="submit"
+                size="large"
+                variant="contained"
+                onClick={() => {
+                  let ra = btoa(selectedStudent?.ra);
+                  navigate(`/students/edit/${ra}`)
+                }}
+              >
+                Atualizar
+              </Button>
+            </div>
+          </div>
+        </Modal>
         <ToastContainer />
         { cards &&
           <CardContainer>
@@ -146,26 +252,34 @@ function Loans() {
             defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
-              <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
-                select
-                label="Aluno"
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                {...field}
+                disablePortal
+                freeSolo
+                disableClearable
+                id="combo-box-demo"
+                options={filteredStudents}
+                getOptionLabel={(option: any) => option.label || ""}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={isOpen ? "": "Aluno"}
+                    sx={{
+                      mb: 2,
+                      mt: 2,
+                      paddingRight: 0,
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+                    }}
+                  />
+                )}
+                onChange={(event, value) => {
+                  field.onChange(value);
+                  verifyIsPending(value)
                 }}
-                error={Boolean(formState.errors?.student)}
-              >
-                <Option disabled style={{display: "none"}}></Option>
-                {students.map((option) => (
-                  option.id &&
-                    <Option
-                      key={option.id}
-                      value={option.id}
-                    >
-                      {option?.name} - {option?.year} {option?.team} {option?.period}
-                    </Option>
-                ))}
-              </TextField>
+              />
             )}
           />
           <Controller
@@ -174,26 +288,34 @@ function Loans() {
             defaultValue=""
             rules={{ required: true }}
             render={({ field }) => (
-              <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
-                select
-                label="Livro"
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                {...field}
+                disablePortal
+                freeSolo
+                disableClearable
+                id="combo-box-demo"
+                options={books}
+                getOptionLabel={(option: any) => option.label || ""}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={isOpen ? "": "Livro"}
+                    sx={{
+                      mb: 2,
+                      mt: 2,
+                      paddingRight: 0,
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+                    }}
+                  />
+                )}
+                onChange={(event, value) => {
+                  setBookSelected(true);
+                  field.onChange(value);
                 }}
-                error={Boolean(formState.errors?.book)}
-              >
-                <Option disabled style={{display: "none"}}></Option>
-                { books.map((option) => (
-                  !option.is_loaned && option.id &&
-                    <Option
-                      key={option.id}
-                      value={option.id}
-                    >
-                      {option?.title} - {option?.serial}
-                    </Option>
-                ))}
-              </TextField>
+              />
             )}
           />
           <Controller
@@ -203,7 +325,7 @@ function Loans() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="Data de Empréstimo"
+                label={isOpen ? "" : "Data de Empréstimo"}
                 sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
@@ -218,6 +340,7 @@ function Loans() {
             type="submit"
             size="large"
             variant="contained"
+            disabled={bookSelected}
           >
             <AddCircleOutlineIcon/>
           </Button>
