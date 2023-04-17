@@ -84,7 +84,7 @@ function Loans() {
   const [listLoans, setlistLoans] = useState(false);
   const [cards, setCards] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent]: any = useState({});
+  const [selectedStudent, setSelectedStudent]: any = useState(false);
   function openModal() {
     setIsOpen(true);
   }
@@ -111,8 +111,8 @@ function Loans() {
     async function fetchBooks() {
       try {
         let books = await GetAllBooks();
-        books = books.map(item => ({
-          label: `${item.serial} - ${item.title}`, id: item.id }));
+        books = books.filter(item => !item.is_loaned)
+        .map(item => ({ label: `${item.serial} - ${item.title}`, id: item.id }));
         setBooks(books);
       } catch (error) {
         console.error(error);
@@ -144,10 +144,10 @@ function Loans() {
     data.student = data.student.id
     data.book = data.book.id
     console.log(data)
-    //const newLoan = await PostLoan(data);
-    //setLoans([...loans, newLoan]);
-    //setBooks(books.filter((item) => item.id !== data.book));
-    //reset();
+    const newLoan = await PostLoan(data);
+    setLoans([...loans, newLoan]);
+    setBooks(books.filter((item) => item.id !== data.book));
+    reset();
     setCards(true);
     setRegisterLoan(false);
     setlistLoans(false);
@@ -272,12 +272,19 @@ function Loans() {
                     InputProps={{
                       ...params.InputProps,
                       type: "search",
+
+                    }}
+                    onChange={(e)=>{
+                      if(e.target.value === "" || !e.target.value){
+                        field.onChange(null);
+                        setSelectedStudent(false);
+                      }
                     }}
                   />
                 )}
                 onChange={(event, value) => {
                   field.onChange(value);
-                  verifyIsPending(value)
+                  verifyIsPending(value);
                 }}
               />
             )}
@@ -309,6 +316,12 @@ function Loans() {
                       ...params.InputProps,
                       type: "search",
                     }}
+                    onChange={(e)=>{
+                      if(e.target.value === "" || !e.target.value){
+                        field.onChange(null);
+                        setBookSelected(false);
+                      }
+                    }}
                   />
                 )}
                 onChange={(event, value) => {
@@ -339,8 +352,8 @@ function Loans() {
             sx={{ mb: 2 }}
             type="submit"
             size="large"
+            disabled={!selectedStudent || selectedStudent.pending || !bookSelected}
             variant="contained"
-            disabled={bookSelected}
           >
             <AddCircleOutlineIcon/>
           </Button>
