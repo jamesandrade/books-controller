@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
 import { Screen } from '../../global/styles/Screen';
-import { Form, Content, TableCard, Option, CardContainer, Card } from './Components';
+import { Form, Content, TableCard, CardContainer, Card } from './Components';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
+import EventIcon from '@mui/icons-material/Event';
+import NumbersIcon from '@mui/icons-material/Numbers';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import TitleIcon from '@mui/icons-material/Title';
+import GroupsIcon from '@mui/icons-material/Groups';
+import BadgeSharpIcon from '@mui/icons-material/BadgeSharp';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
+import WysiwygIcon from '@mui/icons-material/Wysiwyg';
+import EmailSharpIcon from '@mui/icons-material/EmailSharp';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import { btoa } from 'js-base64';
@@ -74,7 +84,7 @@ function Loans() {
   VerifyToken();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:850px)');
-  const { control, handleSubmit, reset, formState  } = useForm<ILoan>();
+  const { control, handleSubmit, reset } = useForm<ILoan>();
   const [loans, setLoans]: any = useState([{}]);
   const [students, setStudents]: any = useState([{}]);
   const [filteredStudents, setFilteredStudents]: any = useState([{}]);
@@ -83,15 +93,23 @@ function Loans() {
   const [registerLoan, setRegisterLoan] = useState(false);
   const [listLoans, setlistLoans] = useState(false);
   const [cards, setCards] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenWarning, setIsOpenWarning] = useState(false);
+  const [isOpenInfos, setIsOpenInfos] = useState(false);
+  const [showLoan, setShowLoan]: any = useState([]);
   const [selectedStudent, setSelectedStudent]: any = useState(false);
-  function openModal() {
-    setIsOpen(true);
+  function openModalWarning() {
+    setIsOpenWarning(true);
   }
-  function closeModal() {
-    setIsOpen(false);
+  function closeModalWarning() {
+    setIsOpenWarning(false);
   }
-
+  function openModalInfos(loan) {
+    setShowLoan(loan);
+    setIsOpenInfos(true);
+  }
+  function closeModalInfos() {
+    setIsOpenInfos(false);
+  }
   useEffect(() => {
     async function fetchStudents() {
       try {
@@ -120,11 +138,14 @@ function Loans() {
     }
     fetchBooks();
   }, []);
-
+  function compare(a,b) {
+    return a.loan - b.loan;
+  }
   useEffect(() => {
     async function fetchLoans() {
       try {
-        const loans = await GetAllLoans();
+        let loans = await GetAllLoans();
+        loans = loans.sort(compare);
         setLoans(loans);
       } catch (error) {
         console.error(error);
@@ -137,7 +158,7 @@ function Loans() {
     const obj = students.find(obj => obj.id === query.id);
     setSelectedStudent(obj);
     if(obj?.pending === true) {
-      return openModal();
+      return openModalWarning();
     }
   }
   const onSubmit = async (data: any) => {
@@ -168,8 +189,8 @@ function Loans() {
       <Sidebar/>
       <Content>
         <Modal
-          isOpen={isOpen}
-          onRequestClose={closeModal}
+          isOpen={isOpenWarning}
+          onRequestClose={closeModalWarning}
           contentLabel="Modal"
           style={isSmallScreen? customStylesSmallScreen: customStyles}
         >
@@ -178,7 +199,7 @@ function Loans() {
           >
             <DisabledByDefaultIcon
               style={{cursor: "pointer"}}
-              onClick={closeModal}
+              onClick={closeModalWarning}
             />
             <div
               style={{display: 'flex', flexDirection: 'column', gap:'1rem', alignItems: 'start'}}
@@ -198,6 +219,88 @@ function Loans() {
               >
                 Atualizar
               </Button>
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={isOpenInfos}
+          onRequestClose={closeModalInfos}
+          contentLabel="Modal"
+          style={isSmallScreen? customStylesSmallScreen: customStyles}
+        >
+          <div
+            style={{display: 'flex', flexDirection: 'column', gap:'1rem', alignItems: 'end'}}
+          >
+            <DisabledByDefaultIcon
+              style={{cursor: "pointer"}}
+              onClick={closeModalInfos}
+            />
+            <div
+              style={{display: 'flex', flexDirection: 'column', gap:'1rem', alignItems: 'start'}}
+            >
+              <p>Aluno</p>
+              <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                  <AccountBoxIcon />
+                  <p>{showLoan?.student?.name}</p>
+              </div>
+              <div
+                style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+              >
+                <BadgeSharpIcon />
+                <p>RA {showLoan?.student?.ra}</p>
+              </div>
+                {showLoan?.student?.phone &&
+                  <div
+                    style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                  >
+                    <SmartphoneIcon />
+                    <p>{showLoan?.student?.phone}</p>
+                  </div>
+                }
+                {showLoan?.student?.email &&
+                  <div
+                    style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                  >
+                    <EmailSharpIcon />
+                    <p>{showLoan?.student?.email}</p>
+                  </div>
+                }
+                <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                  <GroupsIcon />
+                  <p>{showLoan?.student?.registration?.team} {showLoan?.student?.registration?.period}</p>
+                </div>
+                <p>Livro</p>
+                <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                <HistoryEduIcon/> <p>{showLoan?.book?.author}</p>
+                </div>
+                <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                <TitleIcon/> <p>{showLoan?.book?.title}</p>
+                </div>
+                <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                <NumbersIcon/><p>N. de Série: {showLoan?.book?.serial}</p>
+                </div>
+                <div
+                  style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
+                >
+                <EventIcon/><p>Emprestado em: {showLoan?.loan
+                .split(" ")[1]
+                .replace(",", "")
+                .concat("/")
+                .concat((new Date(showLoan.loan)).getUTCMonth() < 9 ? "0" + ((new Date(showLoan.loan)).getUTCMonth() + 1) : ((new Date(showLoan.loan)).getUTCMonth() + 1))
+                .concat("/")
+                .concat((new Date(showLoan.loan)).getUTCFullYear())
+                }</p>
+                </div>
             </div>
           </div>
         </Modal>
@@ -263,7 +366,7 @@ function Loans() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label={isOpen ? "": "Aluno"}
+                    label={isOpenWarning || isOpenInfos ? "": "Aluno"}
                     sx={{
                       mb: 2,
                       mt: 2,
@@ -306,7 +409,7 @@ function Loans() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label={isOpen ? "": "Livro"}
+                    label={isOpenWarning || isOpenInfos ? "": "Livro"}
                     sx={{
                       mb: 2,
                       mt: 2,
@@ -338,7 +441,7 @@ function Loans() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label={isOpen ? "" : "Data de Empréstimo"}
+                label={isOpenWarning || isOpenInfos ? "" : "Data de Empréstimo"}
                 sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
@@ -368,20 +471,21 @@ function Loans() {
                   <TableCell align="left">Nome</TableCell>
                   <TableCell align="left">Livro</TableCell>
                   <TableCell align="left">Data de Empréstimo</TableCell>
+                  <TableCell align="left">Opções</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {loans.map((row) => (
-                  !row.returned &&
+                  row && !row.returned &&
                     <TableRow
                       key={row.id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell component="th" scope="row" align="left">
-                      {row?.student?.name} - {row?.student?.year} {row?.student?.team}
+                      {row?.student?.name}
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
-                      {row?.book?.title} - {row?.book?.serial}
+                      {row?.book?.title}
                     </TableCell>
                     <TableCell align="left">
                       {row?.loan &&
@@ -393,6 +497,14 @@ function Loans() {
                           .concat("/")
                           .concat((new Date(row.loan)).getUTCFullYear())
                       }
+                    </TableCell>
+                    <TableCell component="th" scope="row" align={isSmallScreen ? "center" : "left"}>
+                    <WysiwygIcon
+                      style={{cursor: "pointer"}}
+                      onClick={() => {
+                        openModalInfos(row);
+                      }}
+                    />
                     </TableCell>
                   </TableRow>
                 ))}

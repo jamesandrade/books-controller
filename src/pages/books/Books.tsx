@@ -182,6 +182,7 @@ function Books() {
                   <TableCell  align="left">Título</TableCell>
                   <TableCell align="left">Autor</TableCell>
                   <TableCell align="left">Número de Série</TableCell>
+                  <TableCell align="left">Situação</TableCell>
                   <TableCell align="left">Opções</TableCell>
                 </TableRow>
               </TableHead>
@@ -200,8 +201,11 @@ function Books() {
                     <TableCell component="th" scope="row" align="left">
                       {row?.serial}
                     </TableCell>
+                    <TableCell component="th" scope="row" align="left">
+                      {row?.is_loaned ? "Emprestado" : "Disponível"}
+                    </TableCell>
                     <TableCell
-                      align="left"
+                      align={isSmallScreen ? "right" : "left"}
                       >
                         <EditIcon
                           style={{cursor: 'pointer'}}
