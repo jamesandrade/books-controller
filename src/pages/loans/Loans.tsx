@@ -292,14 +292,14 @@ function Loans() {
                 <div
                   style={{display: 'flex', flexDirection: 'row', gap:'1rem', alignItems: 'center'}}
                 >
-                <EventIcon/><p>Emprestado em: {showLoan?.loan
+                <EventIcon/><p>Emprestado em: {showLoan?.loan &&(showLoan?.loan
                 .split(" ")[1]
                 .replace(",", "")
                 .concat("/")
                 .concat((new Date(showLoan.loan)).getUTCMonth() < 9 ? "0" + ((new Date(showLoan.loan)).getUTCMonth() + 1) : ((new Date(showLoan.loan)).getUTCMonth() + 1))
                 .concat("/")
                 .concat((new Date(showLoan.loan)).getUTCFullYear())
-                }</p>
+                )}</p>
                 </div>
             </div>
           </div>

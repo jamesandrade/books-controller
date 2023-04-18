@@ -15,24 +15,21 @@ import Paper from '@mui/material/Paper';
 import { VerifyToken } from '../../global/api/VerifyToken';
 import { Controller, useForm } from 'react-hook-form';
 import { GetAllLoans, PutLoan } from '../../global/api/Loans';
-import { IStudent } from '../../components/interfaces/IStudent';
-import { IBook } from '../../components/interfaces/IBook';
-import { ILoan } from '../../components/interfaces/ILoan';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {  useMediaQuery } from '@mui/material';
+import {  Autocomplete, useMediaQuery } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { GetAllStudentsWithLoan, GetBooksOfStudent } from '../../global/api/Devolutions';
 
 function Devolutions() {
   VerifyToken();
   const isSmallScreen = useMediaQuery('(max-width:850px)');
-  const { control, handleSubmit, reset, setValue } = useForm<ILoan>();
+  const { control, handleSubmit, reset } = useForm();
   const [students, setStudents]: any = useState([{}]);
-  const addedStudents: { [key: string]: boolean } = {};
-  const [selectBook, setSelectBook] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(false);
   const [loans, setLoans]: any = useState([{}]);
-  const [books, setBooks]: any = useState([{}]);
+  const [books, setBooks]: any = useState([]);
   const [registerDevolution, setRegisterDevolution] = useState(false);
   const [listDevolutions, setlistDevolutions] = useState(false);
   const [cards, setCards] = useState(true);
@@ -41,57 +38,69 @@ function Devolutions() {
     {reason: "Terminou a Leitura", id: 2},
     {reason: "Expirou o prazo para devolução", id: 3}
   ]
+
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        let students = await GetAllStudentsWithLoan();
+        students = students.map(item => ({
+          label: `${item.ra} - ${item.name}`, name: item.name, id: item.id, ra: item.ra }));
+          setStudents(students);
+        } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchStudents();
+  }, []);
   useEffect(() => {
     async function fetchLoans() {
       try {
         const loans = await GetAllLoans();
-        let studentsList: IStudent[] = []
-        loans.forEach((loan: any) => {
-          if (!loan.returned && loan.student && !addedStudents[loan.student.name]) {
-            studentsList.push(loan?.student);
-            addedStudents[loan.student.name] = true;
-          }
-        })
-        setStudents(studentsList);
-        setLoans(loans);
-      } catch (error) {
+          setLoans(loans);
+        } catch (error) {
         console.error(error);
       }
     }
     fetchLoans();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function fetchBooks (student: IStudent) {
-    let booksList: IBook[] = [];
-    loans.forEach((loan: any) => {
-      if(!loan.returned && loan.student && loan.student.id === student.id){
-        booksList.push(loan.book);
-      }
-    });
-    setBooks(booksList);
+  async function loadBooks(value) {
+    let books = await GetBooksOfStudent(value?.ra);
+    books = books.map(item => ({
+      label: `${item?.book?.title} - ${item?.book?.serial}`, loan_id: item?.id, title: item?.book?.title, serial: item?.book?.serial }));
+    setBooks(books);
+    setSelectedStudent(true);
   }
-  const updateValue = (fieldName, value) => {
-    setValue(fieldName, value);
-  };
+  function isSimpleDate(str: string): boolean {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(str);
+  }
+  function formatDate(str: string): string {
+    const parts = str.split('-');
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+    //const date = new Date(`${year}-${month}-${day}`);
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  }
   const onSubmit = async (data: any) => {
-    const updatedLoan = await PutLoan(data);
-    let loansList = loans;
-    const index = loansList.findIndex((loan: any) => loan.id === data.id);
-    if (index !== -1) {
-      loansList[index] = updatedLoan;
+    let loan: any = {};
+    Object.assign(loan, data);
+    data.student = data.student.id;
+    data.id = data.book.loan_id;
+    delete data.book;
+    data.returned = true;
+    loan.returned = true;
+    await PutLoan(data);
+    setLoans([...loans, loan]);
+    try {
+      let students = await GetAllStudentsWithLoan();
+      students = students.map(item => ({
+        label: `${item.ra} - ${item.name}`, name: item.name, id: item.id, ra: item.ra }));
+        setStudents(students);
+      } catch (error) {
+      console.error(error);
     }
-
-    setLoans(loansList)
-    setBooks([])
-    let studentsList: IStudent[] = []
-    loans.forEach((loan: any) => {
-      if (!loan.returned && loan.student && !addedStudents[loan.student.name]) {
-        studentsList.push(loan?.student);
-        addedStudents[loan.student.name] = true;
-      }
-    })
-    setStudents(studentsList);
     reset();
     setCards(true);
     setRegisterDevolution(false);
@@ -160,72 +169,88 @@ function Devolutions() {
           <Controller
             name="student"
             control={control}
-            rules={{ required: true }}
             defaultValue=""
+            rules={{ required: true }}
             render={({ field }) => (
-              <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
-                onChangeCapture={(e)=> {
-                  const target = e.target as HTMLInputElement;
-                  const studentId = target.value;
-                  const selectedStudent = students.find((student: IStudent) => student.id === studentId);
-                  fetchBooks(selectedStudent);
-                  setSelectBook(true);
+              <Autocomplete
+                {...field}
+                disablePortal
+                freeSolo
+                disableClearable
+                id="combo-box-demo"
+                options={students}
+                getOptionLabel={(option: any) => option.label || ""}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Aluno"
+                    sx={{
+                      mb: 2,
+                      mt: 2,
+                      paddingRight: 0,
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+
+                    }}
+                    onChange={(e)=>{
+                      if(e.target.value === "" || !e.target.value){
+                        setSelectedStudent(false);
+                        field.onChange(null);
+                      }
+
+                    }}
+                  />
+                )}
+                onChange={(event, value) => {
+                  loadBooks(value)
+                  field.onChange(value);
                 }}
-                select
-                disabled={students.length <= 0}
-                label="Aluno"
-                SelectProps={{
-                  native: true,
-                }}
-              >
-                <Option disabled style={{display: "none"}}></Option>
-                  {students.map((option) => (
-                    option.id &&
-                      <Option
-                        key={option.id}
-                        value={option.id}
-                      >
-                        {option?.name} - {option?.year} {option?.team} {option?.period}
-                      </Option>
-                  ))}
-              </TextField>
+              />
             )}
           />
           <Controller
             name="book"
             control={control}
-            rules={{ required: true }}
             defaultValue=""
+            rules={{ required: true }}
             render={({ field }) => (
-              <TextField {...field}
-                sx={{ mb: 2, mt: 2 }}
-                onChangeCapture={(e)=> {
-                  const target = e.target as HTMLInputElement;
-                  const bookId = target.value;
-                  const selectedLoan = loans.find((loan: any) => loan.book.id === bookId);
-                  selectedLoan.id &&
-                    updateValue('returned', true);
-                    updateValue('id', selectedLoan.id);
+              <Autocomplete
+                {...field}
+                disablePortal
+                freeSolo
+                disableClearable
+                id="combo-box-demo"
+                options={books}
+                getOptionLabel={(option: any) => option.label || ""}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Livro"
+                    disabled={!selectedStudent || students.length <= 0}
+                    sx={{
+                      mb: 2,
+                      mt: 2,
+                      paddingRight: 0,
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+
+                    }}
+                    onChange={(e)=>{
+                      if(e.target.value === "" || !e.target.value){
+                        field.onChange(null);
+                      }
+
+                    }}
+                  />
+                )}
+                onChange={(event, value) => {
+                  field.onChange(value);
                 }}
-                select
-                disabled={!selectBook || students.length <= 0}
-                label="Livro"
-                SelectProps={{
-                  native: true,
-                }}
-              >
-                <Option disabled style={{display: "none"}}></Option>
-                  {books.map((option) => (
-                    option.id &&
-                      <Option
-                        key={option.id}
-                        value={option.id}
-                      >
-                        {option?.title} - {option?.serial}
-                      </Option>
-                  ))}
-              </TextField>
+              />
             )}
           />
           <Controller
@@ -239,7 +264,7 @@ function Devolutions() {
                 sx={{ mb: 2 }}
                 variant="outlined"
                 margin="normal"
-                disabled={!selectBook || students.length <= 0}
+                disabled={ students.length <= 0}
                 type="date"
                 {...field}
               />
@@ -249,12 +274,12 @@ function Devolutions() {
             name="reason_devolution"
             control={control}
             rules={{ required: true }}
+            defaultValue=""
             render={({ field }) => (
               <TextField {...field}
                 select
                 sx={{ mb: 2, mt: 2 }}
-                defaultValue=""
-                disabled={!selectBook || students.length <= 0}
+                disabled={ students.length <= 0}
                 label="Razão"
                 SelectProps={{
                   native: true,
@@ -296,11 +321,10 @@ function Devolutions() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {loans.map((row) => (
+                {loans.map((row, index) => (
                   row.returned &&
                     <TableRow
-                      key={row.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      key={index}
                     >
                     <TableCell component="th" scope="row" align="left">
                       {row?.student?.name}
@@ -309,18 +333,18 @@ function Devolutions() {
                       {row?.book?.title} - {row?.book?.serial}
                     </TableCell>
                     <TableCell align="left">
-                      {row?.returned_at &&
+                      { isSimpleDate(row?.returned_at) ? formatDate(row.returned_at) :
                         row.returned_at
-                          .split(" ")[1]
-                          .replace(",", "")
-                          .concat("/")
-                          .concat((new Date(row.returned_at)).getUTCMonth() < 9 ? "0" + ((new Date(row.returned_at)).getUTCMonth() + 1) : ((new Date(row.returned_at)).getUTCMonth() + 1))
-                          .concat("/")
-                          .concat((new Date(row.returned_at)).getUTCFullYear())
+                        .split(" ")[1]
+                        .replace(",", "")
+                        .concat("/")
+                        .concat((new Date(row.returned_at)).getUTCMonth() < 9 ? "0" + ((new Date(row.returned_at)).getUTCMonth() + 1) : ((new Date(row.returned_at)).getUTCMonth() + 1))
+                        .concat("/")
+                        .concat((new Date(row.returned_at)).getUTCFullYear())
                       }
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
-                      {reasons.find(reason => reason.id === row?.reason_devolution)?.reason}
+                      {reasons.find(reason => reason.id === parseInt(row?.reason_devolution, 10))?.reason}
                     </TableCell>
                   </TableRow>
                 ))}
