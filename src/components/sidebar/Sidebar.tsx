@@ -23,7 +23,7 @@ function Sidebar() {
 
   const handleExit = (event: any) => {
     event.preventDefault()
-    toast.success('êxito!', {
+    toast.success('Êxito!', {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -47,22 +47,22 @@ function Sidebar() {
         <ToastContainer />
           <Ul>
           <Li onClick={() => navigate('/home')}><TextBar><HomeIcon/>Pág. Inicial</TextBar></Li>
-            <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
-            <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
+            <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Alunos</TextBar></Li>
+            <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livros</TextBar></Li>
             <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
             <Li onClick={() => navigate('/devolutions')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
-            <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
+            <Li onClick={() => navigate('/reports')}><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
             <Li onClick={handleExit}><TextBar><ExitToAppOutlinedIcon/>Sair</TextBar></Li>
 
           </Ul>
           { showMenu &&
             <UlMobile>
               <Li onClick={() => navigate('/home')}><TextBar><HomeIcon/>Pág. Inicial</TextBar></Li>
-              <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Aluno</TextBar></Li>
-              <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livro</TextBar></Li>
+              <Li onClick={() => navigate('/students')}><TextBar><AccountBoxIcon/>Alunos</TextBar></Li>
+              <Li onClick={() => navigate('/books')}><TextBar><AutoStoriesIcon/>Livros</TextBar></Li>
               <Li onClick={() => navigate('/loans')}><TextBar><PlaylistAddOutlinedIcon/>Empréstimos</TextBar></Li>
               <Li onClick={() => navigate('/devolutions')}><TextBar><PlaylistAddCheckOutlinedIcon/>Devoluções</TextBar></Li>
-              <Li><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
+              <Li onClick={() => navigate('/reports')}><TextBar><InsightsIcon/>Relatórios</TextBar></Li>
               <Li onClick={handleExit}><TextBar><ExitToAppOutlinedIcon/>Sair</TextBar></Li>
           </UlMobile> }
       </App>

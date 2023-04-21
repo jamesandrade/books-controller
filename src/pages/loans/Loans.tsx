@@ -9,6 +9,7 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import TitleIcon from '@mui/icons-material/Title';
 import GroupsIcon from '@mui/icons-material/Groups';
 import BadgeSharpIcon from '@mui/icons-material/BadgeSharp';
+import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
@@ -335,13 +336,13 @@ function Loans() {
         }
         {!cards && isSmallScreen &&
           <p
-            style={{color: "#1976d2"}}
-            onClick={() => {
+          style={{color: "#1976d2", display: 'flex', alignItems: 'center', cursor: "pointer"}}
+          onClick={() => {
             setRegisterLoan(false);
             setlistLoans(false);
             setCards(true);
           }}>
-            Voltar
+            <ArrowBackSharpIcon/> Voltar
           </p>
         }
         <Form onSubmit={handleSubmit(onSubmit)}

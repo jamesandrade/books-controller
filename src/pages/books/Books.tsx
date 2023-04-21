@@ -5,6 +5,7 @@ import { Content, Form, TableCard, CardContainer, Card } from './Components';
 import { useForm, Controller } from "react-hook-form";
 import { useMediaQuery } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
+import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
@@ -102,16 +103,16 @@ function Books() {
         }
         {!cards && isSmallScreen &&
           <p
-            style={{color: "#1976d2"}}
+            style={{color: "#1976d2", display: 'flex', alignItems: 'center', cursor: "pointer"}}
             onClick={() => {
-            setRegisterBook(false);
-            setlistBooks(false);
-            setCards(true);
-          }}>
-            Voltar
+              setRegisterBook(false);
+              setlistBooks(false);
+              setCards(true);
+            }}
+          >
+            <ArrowBackSharpIcon/> Voltar
           </p>
         }
-
         <Form onSubmit={handleSubmit(onSubmit)}
           style={
             isSmallScreen ? (registerBook ? {display: 'flex'} :

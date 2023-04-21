@@ -5,6 +5,7 @@ import { Content, Form, TableCard, Option, CardContainer, Card } from './Compone
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -152,13 +153,13 @@ function Devolutions() {
         }
         {!cards && isSmallScreen &&
           <p
-            style={{color: "#1976d2"}}
+            style={{color: "#1976d2", display: 'flex', alignItems: 'center', cursor: "pointer"}}
             onClick={() => {
             setRegisterDevolution(false);
             setlistDevolutions(false);
             setCards(true);
           }}>
-            Voltar
+            <ArrowBackSharpIcon/> Voltar
           </p>
         }
         <Form onSubmit={handleSubmit(onSubmit)}
