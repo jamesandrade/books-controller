@@ -24,7 +24,7 @@ function TopFive() {
         <Content>
           <Form>
             <Controller
-              name="loan"
+              name="start_date"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
@@ -39,7 +39,7 @@ function TopFive() {
               )}
             />
             <Controller
-              name="loan"
+              name="end_date"
               control={control}
               defaultValue="19/04/2023"
               rules={{ required: true }}
