@@ -6,26 +6,53 @@ import BarChartComponent from './components/BarChartComponent';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Controller, useForm } from 'react-hook-form';
+import { GetTopFive } from '../../../global/api/Reports';
+import { useEffect, useState } from 'react';
 
 function TopFive() {
   VerifyToken();
-  const { control, handleSubmit, reset } = useForm();
-  const data = [
-    { label: "Mário Pelota", value: 55, color: "#FFD700" },
-    { label: "João sem Braço", value: 20, color: "#C0C0C0" },
-    { label: "Raul Gil", value: 18, color: "#cd7f32" },
-    { label: "Paula Fernandes", value: 15, color: "#FF6347" },
-    { label: "Maiara Maraisa", value: 13, color: "#6B8E23" },
-  ];
-  VerifyToken();
+  const currentYear = new Date().getFullYear();
+  const defaultStartDate = `${currentYear}-01-01`;
+  const defaultEndDate = `${currentYear}-12-31`;
+  const [tops, setTops] = useState([]);
+  const [dates, setDates] = useState({start_date: defaultStartDate, end_date: defaultEndDate})
+  const { control, handleSubmit } = useForm();
+  function formatDate(str: string): string {
+    const parts = str.split('-');
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+    //const date = new Date(`${year}-${month}-${day}`);
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  }
+  useEffect(() => {
+    async function fetchTops() {
+      try {
+        const topFive = await GetTopFive(defaultStartDate, defaultEndDate);
+        setTops(topFive);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchTops();
+  }, []);
+  const onSubmit = async (data: any) => {
+    if (data.start_date <= data.end_date){
+      const topFive = await GetTopFive(data.start_date, data.end_date);
+      setDates(data);
+      setTops(topFive);
+    }
+  }
   return (
     <Screen>
       <Sidebar/>
         <Content>
-          <Form>
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="start_date"
               control={control}
+              defaultValue={defaultStartDate}
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField
@@ -41,7 +68,7 @@ function TopFive() {
             <Controller
               name="end_date"
               control={control}
-              defaultValue="19/04/2023"
+              defaultValue={defaultEndDate}
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField
@@ -64,8 +91,8 @@ function TopFive() {
               Pesquisar
             </Button>
           </Form>
-        <BarChartComponent data={data} />
-        <p style={{display: 'flex', justifyContent: 'center'}}>Top 5 - Leitura | Período: **/**/**** à **/**/**** </p>
+        <BarChartComponent data={tops} />
+        <p style={{display: 'flex', justifyContent: 'center'}}>Top 5 - Leitura | Período: {formatDate(dates.start_date)} à {formatDate(dates.end_date)}</p>
       </Content>
     </Screen>
   );
