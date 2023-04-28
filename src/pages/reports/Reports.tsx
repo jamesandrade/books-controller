@@ -21,11 +21,11 @@ function Reports(){
               Top 5 - Leitura
             </Card>
             <Card onClick={() => {
-              navigate("/")
+              navigate("/reports/all")
               }}
             >
               <TimelineIcon style={{fontSize: "1.25rem"}} />
-              Histórico Individual
+              Relatório Geral
             </Card>
           </CardContainer>
       </Content>

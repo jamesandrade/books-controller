@@ -18,6 +18,7 @@ import Devolutions from "../pages/devolutions/Devolutions";
 
 import Reports from "../pages/reports/Reports";
 import TopFive from "../pages/reports/topFive/TopFive";
+import All from "../pages/reports/all/All";
 
 
 const routes = () => {
@@ -36,6 +37,7 @@ const routes = () => {
                 <Route path="/devolutions"  element={<Devolutions />} />
                 <Route path="/reports"  element={<Reports />} />
                 <Route path="/reports/topfive"  element={<TopFive />} />
+                <Route path="/reports/all"  element={<All />} />
             </Routes>
         </BrowserRouter>
    )
