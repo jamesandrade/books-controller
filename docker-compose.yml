@@ -1,0 +1,7 @@
+version: "3"
+services:
+  web:
+    build: .
+    command: "yarn start"
+    ports:
+      - "80:3000"
