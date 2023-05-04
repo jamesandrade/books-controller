@@ -185,9 +185,8 @@ function All(){
                     </Button>
                 </Form>
                 <TableCard>
-                <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                    <TableContainer style={{overflow: 'scroll'}}>
-                        <Table style={{ tableLayout: 'fixed', overflow: 'scroll' }} stickyHeader aria-label="sticky table">
+                <TableContainer component={Paper}>
+                    <Table style={{ tableLayout: 'fixed' }} aria-label="simple table">
                             <TableHead>
                                 <TableRow style={{userSelect: 'none'}}>
                                     <TableCell align="left">Aluno</TableCell>
@@ -331,9 +330,7 @@ function All(){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    </Paper>
                 </TableCard>
-
             </Content>
         </Screen>
     );
