@@ -14,5 +14,6 @@ export function VerifyToken(){
         } else {
             navigate("/");
         }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
 }

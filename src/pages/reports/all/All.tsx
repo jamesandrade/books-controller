@@ -39,6 +39,7 @@ function All(){
           }
         }
         fetchTops();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
       function getPeriodValue(period: string): number {
         switch (period) {
